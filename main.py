@@ -2,7 +2,6 @@ from __future__ import print_function
 from pprint import pprint
 from random import randint
 
-from UnknownSegment import UnknownSegment
 from Point import Point
 from Block import Block
 from Grid import Grid
@@ -18,11 +17,10 @@ DIMENSIONS
 
 grid = Grid(width=9, height=6)
 robot_hardware = RobotHardware()
-#grid[8, 4] = Block(8, 4)
-#grid[7, 5] = Point(7, 5)
-for _y in range(6):
-    for _x in range(9):
-        grid[_x, _y] = (UnknownSegment, )[randint(0, 0)](_x, _y)
-r = Robot(grid, robot_hardware, 3, 2)
+
+grid[8, 3] = Block
+grid[7, 5] = Point(7, 5)
+
+r = Robot(grid, robot_hardware, 8, 5)
 r.check_sides()
 print(r)
