@@ -34,8 +34,8 @@ class Robot(object):
         x, y = start_segment.position
         length = self.__hardware.get_length(side)
 
-
-    def __get_next_position(self, side, *position):
+    @staticmethod
+    def __get_next_position(side, *position):
         assert len(position) == 2
         if side == 0:
             return position[0], position[1] - 1
@@ -67,12 +67,12 @@ class Robot(object):
 
     def __str__(self):
         ret_str = ''
-        for y, row in enumerate(self.__grid.get_whole_grid()):
-            str_row = '\n'
-            for x, part in enumerate(row):
+        grid = self.__grid.get_whole_grid()
+        for y in range(self.__grid.height):
+            for x, column in enumerate(grid):
                 if self.__x == x and self.__y == y:
-                    str_row += '[RRR]'
+                    ret_str += '[RRR]'
                 else:
-                    str_row += str(part)
-            ret_str += str_row
+                    ret_str += str(column[y])
+            ret_str += '\n'
         return ret_str
