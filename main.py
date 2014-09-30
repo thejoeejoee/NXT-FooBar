@@ -1,8 +1,11 @@
 from __future__ import print_function
+from Block import Block
 
 from Grid import Grid
+from Point import Point
 from Robot import Robot
 from RobotHardware import RobotHardware
+from UnknownSegment import UnknownSegment
 
 """
 DIMENSIONS
@@ -15,6 +18,10 @@ DIMENSIONS
 grid = Grid(width=9, height=6)
 robot_hardware = RobotHardware()
 
-r = Robot(grid, robot_hardware, 8, 5)
+grid[6, 4] = Block
+grid[7, 4] = Point
+
+
+r = Robot(grid, robot_hardware, 4, 4)
 r.check_sides()
 print(r)

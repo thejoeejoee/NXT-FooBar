@@ -1,5 +1,9 @@
+from Block import Block
+from Point import Point
+from RobotHardware import RobotHardware
 from UnknownSegment import UnknownSegment
 from Grid import Grid
+from settings import DIRECTIONS_NAMES
 
 
 class Robot(object):
@@ -12,9 +16,11 @@ class Robot(object):
         :param y: int
         """
         assert isinstance(grid, Grid)
+        assert isinstance(robot_hardware, RobotHardware)
         self.__grid = grid
         self.__x = x
         self.__y = y
+        self.__position = x, y
         self.__hardware = robot_hardware
 
     def get_actual_row(self):
@@ -25,17 +31,31 @@ class Robot(object):
 
     def check_sides(self):
         flags = self.__get_edge_flags()
-        for i, flag in enumerate(flags):
-            next_position = self.__get_next_position(i, self.__x, self.__y)
-            if not flag and isinstance(self.__grid[next_position], UnknownSegment):
-                self.check_line(self.__grid[self.__x, self.__y], i)
+        for side, flag in enumerate(flags):
+            if not flag:
+                scan_line = False
+                next_position = self.__get_next_position(side, self.__position)
+                positions = []
+                while next_position[0] and next_position[1] and next_position[0] != self.__grid.width and next_position[1] != self.__grid.height:
+                    next_segment = self.__grid[next_position]
+                    if isinstance(next_segment, Block):
+                        break
+                    if isinstance(next_segment, UnknownSegment):
+                        scan_line = True
+                    next_position = self.__get_next_position(side, next_position)
+                    positions.append(next_position)
+                if scan_line:
+                    print(positions)
+                    self.scan_line(side, self.__x, self.__y)
 
-    def check_line(self, start_segment, side):
-        x, y = start_segment.position
+    def scan_line(self, side, *position):
+        assert isinstance(position, tuple) and len(position) == 2
+        x, y = position
         length = self.__hardware.get_length(side)
 
+
     @staticmethod
-    def __get_next_position(side, *position):
+    def __get_next_position(side, position):
         assert len(position) == 2
         if side == 0:
             return position[0], position[1] - 1
@@ -48,6 +68,7 @@ class Robot(object):
         else:
             raise IndexError
 
+    # deprecated, it has to be rewritten to check on one side
     def __get_edge_flags(self):
         """
         check, if is robot on one of edge
@@ -63,7 +84,6 @@ class Robot(object):
         elif self.__x == self.__grid.width - 1:
             flags[1] = True
         return tuple(flags)
-
 
     def __str__(self):
         ret_str = ''

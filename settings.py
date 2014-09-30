@@ -16,11 +16,18 @@ DIRECTIONS = (
     Diretions.top,
     Diretions.right,
     Diretions.bottom,
-    Diretions.left
+    Diretions.left,
+)
+
+DIRECTIONS_NAMES = (
+    'top',
+    'right',
+    'bottom',
+    'left',
 )
 
 GRID_SEGMENTS = (
     UnknownSegment,
     Block,
-    Point
+    Point,
 )

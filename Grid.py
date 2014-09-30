@@ -8,6 +8,8 @@ class Grid(object):
     """
 
     def __init__(self, width=9, height=6):
+        assert isinstance(width, int)
+        assert isinstance(height, int)
         self.width = width
         self.height = height
         self.__grid = []
@@ -30,7 +32,7 @@ class Grid(object):
             if isinstance(segment, GRID_SEGMENTS):
                 self.__grid[indexes[0]][indexes[1]] = segment
             else:
-                self.__grid[indexes[0]][indexes[1]] = segment([indexes[0]], [indexes[1]])
+                self.__grid[indexes[0]][indexes[1]] = segment(indexes[0], indexes[1])
         else:
             raise IndexError('Unknown index')
         return self
