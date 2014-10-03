@@ -5,7 +5,6 @@ from Grid import Grid
 from Point import Point
 from Robot import Robot
 from RobotHardware import RobotHardware
-from UnknownSegment import UnknownSegment
 
 """
 DIMENSIONS
@@ -21,7 +20,6 @@ robot_hardware = RobotHardware()
 grid[6, 4] = Block
 grid[7, 4] = Point
 
-
-r = Robot(grid, robot_hardware, 4, 4)
+r = Robot(grid, robot_hardware, 4, 5)
 r.check_sides()
 print(r)

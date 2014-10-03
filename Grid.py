@@ -49,3 +49,25 @@ class Grid(object):
     def get_whole_grid(self):
         return self.__grid
 
+    @staticmethod
+    def exists_position(width, height, position):
+        assert len(position) == 2
+        if position[0] < 0 or position[1] < 0:
+            return False
+        if position[0] > width or position[1] > height:
+            return False
+        return True
+
+    @staticmethod
+    def get_next_position(side, position):
+        assert len(position) == 2
+        if side == 0:
+            return position[0], position[1] - 1
+        elif side == 1:
+            return position[0] + 1, position[1]
+        elif side == 2:
+            return position[0], position[1] + 1
+        elif side == 3:
+            return position[0] - 1, position[1]
+        else:
+            raise IndexError
