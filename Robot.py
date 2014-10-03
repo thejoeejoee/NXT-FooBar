@@ -1,4 +1,5 @@
 from Block import Block
+from Point import Point
 from RobotHardware import RobotHardware
 from UnknownSegment import UnknownSegment
 from Grid import Grid
@@ -22,9 +23,11 @@ class Robot(object):
         self.__position = x, y
         self.__hardware = robot_hardware
 
+    # probably unused
     def get_actual_row(self):
         return self.__grid.get_row(self.__y)
 
+    # probably unused
     def get_actual_column(self):
         return self.__grid.get_column(self.__x)
 
@@ -34,8 +37,7 @@ class Robot(object):
             next_position = Grid.get_next_position(side, self.__position)
             if not Grid.exists_position(self.__grid.width, self.__grid.height, next_position):
                 continue
-            while next_position[0] and next_position[1] and next_position[0] != self.__grid.width and next_position[
-                1] != self.__grid.height:
+            while Grid.exists_position(self.__grid.width, self.__grid.height, next_position):
                 next_segment = self.__grid[next_position]
                 if isinstance(next_segment, Block):
                     break
@@ -43,12 +45,22 @@ class Robot(object):
                     scan_line = True
                 next_position = Grid.get_next_position(side, next_position)
             if scan_line:
-                self.scan_line(side, self.__x, self.__y)
+                self.scan_line(side, self.__position)
 
-    def scan_line(self, side, *position):
+    def scan_line(self, side, position):
         assert isinstance(position, tuple) and len(position) == 2
         x, y = position
-        length = self.__hardware.get_length(side)
+        blocks = self.__hardware.get_count_of_empty_blocks(side)
+        position = self.__position
+        for _ in range(blocks):
+            position = Grid.get_next_position(side, position)
+            if not Grid.exists_position(self.__grid.width, self.__grid.height, position):
+                break
+            self.__grid[position] = Point
+        end_position = Grid.get_next_position(side, position)
+        if Grid.exists_position(self.__grid.width, self.__grid.height, end_position):
+            self.__grid[end_position] = Block
+
 
     def __str__(self):
         ret_str = ''

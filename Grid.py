@@ -1,4 +1,4 @@
-from settings import GRID_SEGMENTS
+from settings import GRID_SEGMENTS, GRID_DEFAULT_WIDTH
 from UnknownSegment import UnknownSegment
 
 
@@ -7,7 +7,7 @@ class Grid(object):
     game grid controller
     """
 
-    def __init__(self, width=9, height=6):
+    def __init__(self, width=GRID_DEFAULT_WIDTH, height=GRID_DEFAULT_WIDTH):
         assert isinstance(width, int)
         assert isinstance(height, int)
         self.width = width
@@ -54,7 +54,7 @@ class Grid(object):
         assert len(position) == 2
         if position[0] < 0 or position[1] < 0:
             return False
-        if position[0] > width or position[1] > height:
+        if position[0] > width - 1 or position[1] > height - 1:  # because it's indexed from zero
             return False
         return True
 
