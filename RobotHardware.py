@@ -18,5 +18,5 @@ class RobotHardware(object):
         elif offset > SEGMENT_WIDTH - SONIC_SENSOR_INACCURACY:
             blocks = probably_blocks + 1
         else:
-            raise BrokenPipeError
+            raise BrokenPipeError('Unknown data from ultrasonic sensor, value: {}.'.format(length))
         return int(blocks)

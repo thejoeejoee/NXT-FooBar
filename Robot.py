@@ -56,11 +56,14 @@ class Robot(object):
             position = Grid.get_next_position(side, position)
             if not Grid.exists_position(self.__grid.width, self.__grid.height, position):
                 break
-            self.__grid[position] = Point
+            # TODO move to separate method named set_known_segment
+            new_segment = self.__grid[position]
+            if isinstance(new_segment, UnknownSegment):
+                self.__grid[position] = Point
         end_position = Grid.get_next_position(side, position)
+        # TODO this too
         if Grid.exists_position(self.__grid.width, self.__grid.height, end_position):
             self.__grid[end_position] = Block
-
 
     def __str__(self):
         ret_str = ''
