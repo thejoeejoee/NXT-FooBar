@@ -33,31 +33,3 @@ function UltraSonic:scan()
 
     return result
 end
-
-sen = UltraSonic.new(Sensor.Port1)
-mot = Motor.new(Motor.PortA)
-mot:setSpeed(100, Motor.Forward)
-angle = mot:status()
-res = Motor.Forward
-scans = 0
-
-repeat	
-	stat = mot:status()
-	if(stat>=angle-3 and stat<=angle+3) then
-		print(sen:scan())
-		if res == Motor.Forward then
-			angle = (angle + 90)%360
-		else
-			angle = (angle - 90)%360
-		end
-		scans = scans + 1
-		mot:limitedRotate(90)
-	end
-	if scans==4 then
-		res = (res == Motor.Backward) and Motor.Forward or Motor.Backward
-		mot:setSpeed(100,res)
-		scans = 0
-	end
-
-
-until(nxt.ButtonRead() == 8)
