@@ -9,17 +9,17 @@ nxt.I2Ccontinuous = string.char(0x02, 0x41, 0x02)
 nxt.I2Cdata       = string.char(0x02, 0x42)
 
 function UltraSonic.new(port)
-        local o = Sensor.new(port)
+    local o = Sensor.new(port)
  
-        --init I2C
-        nxt.I2CInitPins(port)
-        nxt.InputSetType(port, 2)
-        nxt.InputSetDir(port, 1, 1)
-        nxt.InputSetState(port, 1, 1)
-        nxt.I2CSendData(3, nxt.I2Cproduct, 8)
- 
-        setmetatable(o, {__index = UltraSonic})
-        return o
+    --init I2C
+    nxt.I2CInitPins(port)
+    nxt.InputSetType(port, 2)
+    nxt.InputSetDir(port, 1, 1)
+    nxt.InputSetState(port, 1, 1)
+    nxt.I2CSendData(3, nxt.I2Cproduct, 8)
+
+    setmetatable(o, {__index = UltraSonic})
+    return o
 end
  
 function UltraSonic:scan()
