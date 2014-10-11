@@ -13,6 +13,7 @@ function Motor.new(port)
 	o.p_Port = port or 1
 	o.p_Speed = 0
 	o.p_Brake = false
+	o.p_Direction = Motor.Forward
 
 	setmetatable(o, {__index = Motor})
 	return o
@@ -23,8 +24,8 @@ function Motor:setSpeed(value, direction)
 		error("exSetSpeedOutOfRange")
 	end
 
-	direction = direction or Motor.Forward
-	self.p_Speed = (direction == Motor.Forward) and value or -value
+	self.p_Direction = direction or Motor.Forward
+	self.p_Speed = (self.p_Direction == Motor.Forward) and value or -value
 end
 
 function Motor:status()
@@ -63,31 +64,6 @@ function Motor:stop(brake)
 	end
 end
 
---[[
-Motor = {
-	PortA = 1,
-	PortB = 2,
-	PortC = 3,
-
-	Forward = 4,
-	Backward = 5
-}
-
-Motor.new( port )
-Motor:setSpeed(value, direction)
-Motor:status()
-Motor:continuouslyRotate()
-Motor:limitedRotate(angle)
-Motor:setBrake(value)
-Motor:stop(brake)
-]]
-
---[[Example
-print(Motor.PortB)
-mot = Motor.new(Motor.PortA)
-mot:setSpeed(100)
-mot:continuouslyRotate()
-mot2 = Motor.new(Motor.PortB)
-mot2:setSpeed(100)
-mot2:continuouslyRotate()
-]]
+function Motor:direction()
+	return self.p_Direction
+end
