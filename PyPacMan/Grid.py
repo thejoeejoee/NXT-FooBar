@@ -1,5 +1,5 @@
-from settings import GRID_SEGMENTS, GRID_DEFAULT_WIDTH
-from UnknownSegment import UnknownSegment
+from PyPacMan.UnknownSegment import UnknownSegment
+from PyPacMan.settings import GRID_DEFAULT_WIDTH, GRID_DEFAULT_HEIGHT, GRID_SEGMENTS
 
 
 class Grid(object):
@@ -7,7 +7,7 @@ class Grid(object):
     game grid controller
     """
 
-    def __init__(self, width=GRID_DEFAULT_WIDTH, height=GRID_DEFAULT_WIDTH):
+    def __init__(self, width=GRID_DEFAULT_WIDTH, height=GRID_DEFAULT_HEIGHT):
         assert isinstance(width, int)
         assert isinstance(height, int)
         self.width = width

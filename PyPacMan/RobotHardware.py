@@ -1,11 +1,10 @@
 from random import uniform, randint
-
-from settings import SEGMENT_WIDTH, SONIC_SENSOR_INACCURACY
+from PyPacMan.settings import SEGMENT_WIDTH, SONIC_SENSOR_INACCURACY
 
 
 class RobotHardware(object):
     def get_count_of_empty_blocks(self, side):
-        # ##### SOME HARDWARE MAGIC ABOUT SENSORS #####
+        # ##### SOME HARDWARE MAGIC ABOUT SENSORS AND SIDE #####
         blocks = randint(0, 4)
         length = float(blocks * SEGMENT_WIDTH) + uniform(-float(SONIC_SENSOR_INACCURACY),
                                                          float(SONIC_SENSOR_INACCURACY))

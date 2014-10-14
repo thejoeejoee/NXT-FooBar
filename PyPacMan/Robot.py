@@ -1,10 +1,9 @@
-from Block import Block
-from Point import Point
-from RobotHardware import RobotHardware
-from UnknownSegment import UnknownSegment
-from Grid import Grid
-from settings import DIRECTIONS
-
+from PyPacMan.RobotHardware import RobotHardware
+from PyPacMan.Grid import Grid
+from PyPacMan.settings import DIRECTIONS
+from PyPacMan.Block import Block
+from PyPacMan.Point import Point
+from PyPacMan.UnknownSegment import UnknownSegment
 
 class Robot(object):
     # requiring x and y depends on robosoutez.cz
@@ -31,7 +30,11 @@ class Robot(object):
     def get_actual_column(self):
         return self.__grid.get_column(self.__x)
 
+    #
     def check_sides(self):
+        """
+        tests, if robot has reason to sonic check the line
+        """
         for side in DIRECTIONS:
             scan_line = False
             next_position = Grid.get_next_position(side, self.__position)
@@ -48,22 +51,38 @@ class Robot(object):
                 self.scan_line(side, self.__position)
 
     def scan_line(self, side, position):
+        """
+        call hardware and set segments into grid
+        :param side: int
+        :param position: tuple
+        """
         assert isinstance(position, tuple) and len(position) == 2
         x, y = position
         blocks = self.__hardware.get_count_of_empty_blocks(side)
         position = self.__position
         for _ in range(blocks):
             position = Grid.get_next_position(side, position)
-            if not Grid.exists_position(self.__grid.width, self.__grid.height, position):
+            if not self.set_known_segment(position, Point):
                 break
-            # TODO move to separate method named set_known_segment
-            new_segment = self.__grid[position]
-            if isinstance(new_segment, UnknownSegment):
-                self.__grid[position] = Point
         end_position = Grid.get_next_position(side, position)
-        # TODO this too
-        if Grid.exists_position(self.__grid.width, self.__grid.height, end_position):
-            self.__grid[end_position] = Block
+        self.set_known_segment(end_position, Block)
+
+    def set_known_segment(self, position, segment_class):
+        """
+        :param position:
+        :param segment_class:
+        :return:
+        """
+        if Grid.exists_position(self.__grid.width, self.__grid.height, position):
+            if isinstance(self.__grid[position], UnknownSegment):
+                self.__grid[position] = segment_class
+            else:
+                # fuck it, hardware or grid lies
+                print(
+                    'On {} I want set {}, but here is {}.'.format(position, segment_class, type(self.__grid[position])))
+            return True
+        else:
+            return False
 
     def __str__(self):
         ret_str = ''
