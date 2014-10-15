@@ -22,15 +22,13 @@ class Robot(object):
         self.__position = x, y
         self.__hardware = robot_hardware
 
-    # probably unused
-    def get_actual_row(self):
-        return self.__grid.get_row(self.__y)
+    def get_closed_ways(self):
+        """
+        some recursive magic about closed ways problem
+        :return:
+        """
+        pass
 
-    # probably unused
-    def get_actual_column(self):
-        return self.__grid.get_column(self.__x)
-
-    #
     def check_sides(self):
         """
         tests, if robot has reason to sonic check the line
@@ -57,7 +55,6 @@ class Robot(object):
         :param position: tuple
         """
         assert isinstance(position, tuple) and len(position) == 2
-        x, y = position
         blocks = self.__hardware.get_count_of_empty_blocks(side)
         position = self.__position
         for _ in range(blocks):
