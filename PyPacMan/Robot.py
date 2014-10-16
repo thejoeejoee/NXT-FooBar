@@ -21,6 +21,7 @@ class Robot(object):
         self.__y = y
         self.__position = x, y
         self.__hardware = robot_hardware
+        self.__last_direction = None
 
     def get_closed_ways(self):
         """
@@ -36,9 +37,9 @@ class Robot(object):
         for side in DIRECTIONS:
             scan_line = False
             next_position = Grid.get_next_position(side, self.__position)
-            if not Grid.exists_position(self.__grid.width, self.__grid.height, next_position):
+            if not Grid.exists_position(next_position):
                 continue
-            while Grid.exists_position(self.__grid.width, self.__grid.height, next_position):
+            while Grid.exists_position(next_position):
                 next_segment = self.__grid[next_position]
                 if isinstance(next_segment, Block):
                     break
@@ -70,7 +71,7 @@ class Robot(object):
         :param segment_class:
         :return:
         """
-        if Grid.exists_position(self.__grid.width, self.__grid.height, position):
+        if Grid.exists_position(position):
             if isinstance(self.__grid[position], UnknownSegment):
                 self.__grid[position] = segment_class
             else:

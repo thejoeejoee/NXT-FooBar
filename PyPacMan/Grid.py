@@ -1,5 +1,6 @@
+from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
-from PyPacMan.settings import GRID_DEFAULT_WIDTH, GRID_DEFAULT_HEIGHT, GRID_SEGMENTS
+from PyPacMan.settings import GRID_DEFAULT_WIDTH, GRID_DEFAULT_HEIGHT, GRID_SEGMENTS, DIRECTIONS
 
 
 class Grid(object):
@@ -12,13 +13,7 @@ class Grid(object):
         assert isinstance(height, int)
         self.width = width
         self.height = height
-        self.__grid = []
-        for _x in range(width):
-            column = []
-            for _y in range(height):
-                column.append(UnknownSegment(_x, _y))
-            self.__grid.append(column)
-        pass
+        self.__grid = [[UnknownSegment(_x, _y) for _y in range(height)] for _x in range(width)]
 
     def __getitem__(self, indexes):
         if isinstance(indexes, tuple) and len(indexes) == 2:
@@ -49,8 +44,22 @@ class Grid(object):
     def get_whole_grid(self):
         return self.__grid
 
+    def get_free_directions(self, position, unknown_segments=True):
+        assert len(position) == 2
+        free_directions = []
+        for side in DIRECTIONS:
+            side_position = Grid.get_next_position(side, position)
+            if not Grid.exists_position(side_position):
+                continue
+            # on position is Point or Unknown segment with flag
+            if isinstance(self[side_position], Point) or unknown_segments and isinstance(self[side_position],
+                                                                                         UnknownSegment):
+                free_directions.append(side)
+                continue
+        return tuple(free_directions)
+
     @staticmethod
-    def exists_position(width, height, position):
+    def exists_position(position, width=GRID_DEFAULT_WIDTH, height=GRID_DEFAULT_HEIGHT):
         assert len(position) == 2
         if position[0] < 0 or position[1] < 0:
             return False
