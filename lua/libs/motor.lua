@@ -3,8 +3,11 @@ Motor = {
 	PortB = 2,
 	PortC = 3,
 
-	Forward = 4,
-	Backward = 5
+	Forward = 1,
+	Backward = 2,
+
+	Continuously = 1,
+	Limited = 2,
 }
 
 function Motor.new(port)
@@ -14,6 +17,8 @@ function Motor.new(port)
 	o.p_Speed = 0
 	o.p_Brake = false
 	o.p_Direction = Motor.Forward
+	o.p_RotationType = 0
+	o.p_Control = false
 
 	setmetatable(o, {__index = Motor})
 	return o
@@ -25,7 +30,7 @@ function Motor:setSpeed(value, direction)
 	end
 
 	self.p_Direction = direction or Motor.Forward
-	self.p_Speed = (self.p_Direction == Motor.Forward) and value or -value
+	self.p_Speed = (self.p_Direction == Motor.Forward) and nxt.abs(value) or -value
 end
 
 function Motor:status()
@@ -34,11 +39,14 @@ function Motor:status()
 end
 
 function Motor:continuouslyRotate()
+	self.p_RotationType = Motor.Continuously
 	nxt.OutputSetSpeed(self.p_Port, 32, self.p_Speed)
 end
 
 function Motor:limitedRotate(angle)
 	angle = angle or 0
+	self.p_RotationType = Motor.Limited
+	self.p_Control = true
 
 	nxt.OutputSetRegulation(self.p_Port,1,1)
 	nxt.OutputSetSpeed(self.p_Port, 0x20, self.p_Speed, angle)
@@ -66,4 +74,29 @@ end
 
 function Motor:direction()
 	return self.p_Direction
+end
+
+function Motor:raw_status()
+	_, tacho = nxt.OutputGetStatus(self.p_Port)
+	return tacho
+end
+
+function Motor:controlRotation()
+	if self.p_RotationType == Motor.Continuously then
+		error("exBadRotationType")
+	end
+		
+
+	_, _, _, _, _, _, remaining = nxt.OutputGetStatus(self.p_Port)
+	if remaining <= 1 and self.p_Control then
+		self.p_Control = false
+		error("RotationFinished")
+	end
+end	
+
+function Motor:invertDirection()
+	print(self.p_Direction)
+	self.p_Direction = (self.p_Direction == Motor.Forward) and Motor.Backward or Motor.Forward
+	print(self.p_Direction)
+	self:setSpeed(self.p_Speed, self.p_Direction)
 end
