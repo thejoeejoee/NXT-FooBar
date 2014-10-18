@@ -30,7 +30,7 @@ function Motor:setSpeed(value, direction)
 	end
 
 	self.p_Direction = direction or Motor.Forward
-	self.p_Speed = (self.p_Direction == Motor.Forward) and nxt.abs(value) or -value
+	self.p_Speed = (self.p_Direction == Motor.Forward) and value or (-value)
 end
 
 function Motor:status()
@@ -96,5 +96,5 @@ end
 
 function Motor:invertDirection()
 	self.p_Direction = (self.p_Direction == Motor.Forward) and Motor.Backward or Motor.Forward
-	self:setSpeed(self.p_Speed, self.p_Direction)
+	self.p_Speed = -self.p_Speed
 end
