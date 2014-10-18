@@ -95,8 +95,6 @@ function Motor:controlRotation()
 end	
 
 function Motor:invertDirection()
-	print(self.p_Direction)
 	self.p_Direction = (self.p_Direction == Motor.Forward) and Motor.Backward or Motor.Forward
-	print(self.p_Direction)
 	self:setSpeed(self.p_Speed, self.p_Direction)
 end
