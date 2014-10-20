@@ -7,7 +7,7 @@ Motor = {
 	Backward = 2,
 
 	Continuously = 1,
-	Limited = 2,
+	Limited = 2
 }
 
 function Motor.new(port)
