@@ -23,7 +23,7 @@ class Robot(object):
         self.__hardware = robot_hardware
         self.__last_direction = None
 
-    def get_closed_ways(self):
+    def get_closed_ways(self, side, length=1):
         """
         some recursive magic about closed ways problem
         :return:

@@ -1,6 +1,6 @@
-from UnknownSegment import UnknownSegment
-from Block import Block
-from Point import Point
+from PyPacMan.Block import Block
+from PyPacMan.Point import Point
+from PyPacMan.UnknownSegment import UnknownSegment
 
 SEGMENT_WIDTH = 10
 SONIC_SENSOR_INACCURACY = 3

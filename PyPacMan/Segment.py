@@ -4,9 +4,11 @@ class Segment(object):
     """
 
     def __init__(self, x, y):
+        assert isinstance(x, int)
+        assert isinstance(y, int)
         self.position = x, y
-        self.x = x
-        self.y = y
+        self.__x = x
+        self.__y = y
 
     def __str__(self):
         raise NotImplementedError
