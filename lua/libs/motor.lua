@@ -44,7 +44,7 @@ function Motor:continuouslyRotate()
 end
 
 function Motor:limitedRotate(angle)
-	angle = angle or 0
+	local angle = angle or 0
 	self.p_RotationType = Motor.Limited
 	self.p_Control = true
 
@@ -61,7 +61,7 @@ function Motor:setBrake(value)
 end
 
 function Motor:stop(brake)
-	brake = brake or false
+	local brake = brake or false
 
 	nxt.OutputSetRegulation(self.p_Port, 1, tonumber(brake))
 
@@ -77,7 +77,7 @@ function Motor:direction()
 end
 
 function Motor:raw_status()
-	_, tacho = nxt.OutputGetStatus(self.p_Port)
+	local _, tacho = nxt.OutputGetStatus(self.p_Port)
 	return tacho
 end
 
@@ -87,7 +87,7 @@ function Motor:controlRotation()
 	end
 		
 
-	_, _, _, _, _, _, remaining = nxt.OutputGetStatus(self.p_Port)
+	local _, _, _, _, _, _, remaining = nxt.OutputGetStatus(self.p_Port)
 	if remaining <= 1 and self.p_Control then
 		self.p_Control = false
 		error("RotationFinished")
