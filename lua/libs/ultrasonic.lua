@@ -29,7 +29,16 @@ function UltraSonic:scan()
   	end
 
     local s = nxt.I2CRecvData(self.p_Port, 8)
-    result = string.byte(s,1,8)
+    local result = string.byte(s,1,8)
 
     return result
+end
+
+function UltraSonic:controlDistance(requiredDistance)
+    local result = self:scan()
+    local tolerance = 3
+
+    if requiredDistance >= result - tolerance and requiredDistance <= result + tolerance then
+        error("DistanceReached")
+    end
 end
