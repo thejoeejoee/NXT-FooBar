@@ -1,3 +1,5 @@
+dofile("segment.lua")
+
 UnknowSegment = {}
 
 function UnknowSegment.new(x, y)
