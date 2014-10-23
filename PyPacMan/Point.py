@@ -11,4 +11,4 @@ class Point(Segment):
         self.collected = False
 
     def __str__(self):
-        return '[000]'
+        return '[{}0{}]'.format(self._x, self._y)

@@ -1,6 +1,6 @@
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
-from PyPacMan.settings import GRID_DEFAULT_WIDTH, GRID_DEFAULT_HEIGHT, GRID_SEGMENTS, DIRECTIONS
+from PyPacMan.settings import GRID_DEFAULT_WIDTH, GRID_DEFAULT_HEIGHT, GRID_SEGMENTS, DIRECTIONS, Diretions
 
 
 class Grid(object):
@@ -80,3 +80,11 @@ class Grid(object):
             return position[0] - 1, position[1]
         else:
             raise IndexError
+
+    @staticmethod
+    def get_oposite_side(side):
+        assert side in DIRECTIONS
+        if side in (Diretions.top, Diretions.right):
+            return side + 2
+        elif side in (Diretions.bottom, Diretions.left):
+            return side - 2

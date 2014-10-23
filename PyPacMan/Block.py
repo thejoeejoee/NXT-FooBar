@@ -10,4 +10,4 @@ class Block(Segment):
         super(Block, self).__init__(x, y)
 
     def __str__(self):
-        return '[XXX]'
+        return '[{}X{}]'.format(self._x, self._y)

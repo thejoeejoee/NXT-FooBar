@@ -7,8 +7,8 @@ class Segment(object):
         assert isinstance(x, int)
         assert isinstance(y, int)
         self.position = x, y
-        self.__x = x
-        self.__y = y
+        self._x = x
+        self._y = y
 
     def __str__(self):
         raise NotImplementedError
