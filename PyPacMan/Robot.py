@@ -1,6 +1,6 @@
 from PyPacMan.RobotHardware import RobotHardware
 from PyPacMan.Grid import Grid
-from PyPacMan.settings import DIRECTIONS
+from PyPacMan.settings import DIRECTIONS, MAX_GRID_RECURSIVE_DEPTH
 from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
@@ -23,12 +23,30 @@ class Robot(object):
         self.__hardware = robot_hardware
         self.__last_direction = None
 
-    def get_closed_ways(self, side, length=1):
+    def is_closed_way(self, in_side, position=None, length=0):
         """
         some recursive magic about closed ways problem
         :return:
         """
-        pass
+        if position is None:
+            position = self.__position
+
+
+        free_sides = []
+        for side in DIRECTIONS:
+            next_position = Grid.get_next_position(side, position)
+            if not Grid.exists_position(next_position):
+                continue
+            next_segment = self.__grid[next_position]
+            if isinstance(next_segment, Point):
+                free_sides.append(self.is_closed_way(side, next_position, length+1))
+            else:
+                free_sides.append(False)
+        print(free_sides)
+
+
+
+
 
     def check_sides(self):
         """
