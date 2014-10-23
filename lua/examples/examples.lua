@@ -1,3 +1,7 @@
+----------------------------------------
+-------otáčení senzoru tam a zpět-------
+----------------------------------------
+
 sen = UltraSonic.new(Sensor.Port1)
 mot = Motor.new(Motor.PortA)
 mot:setSpeed(100, Motor.Forward)
@@ -28,6 +32,10 @@ repeat
 
 until(nxt.ButtonRead() == 8)
 
+-----------------------------------
+----------zvedání nápravy----------
+-----------------------------------
+
 nxt.dofile("motor")
 m = Motor.new(Motor.PortA)
 m:setSpeed(100, Motor.Backward)
@@ -36,6 +44,10 @@ while true do
 	m:limitedRotate(6*360)
 	m:invertDirection()
 end
+
+----------------------------------
+--------nárážení do krabic--------
+----------------------------------
 
 m = Motor.new(Motor.PortA)
 m:setSpeed(100)
@@ -46,7 +58,6 @@ ms:setSpeed(100)
 
 s = UltraSonic.new(Sensor.Port1)
 
-foo = 0
 scanning = true
 
 repeat
@@ -80,6 +91,11 @@ repeat
 	)
 until(nxt.ButtonRead == 8)
 
+
+----------------------------------
+-------event driven rotating------
+----------------------------------
+
 mot = Motor.new(Motor.PortB)
 mot:setSpeed(100)
 --ultrasonic = UltraSonic.new(Sensor.Port1)
@@ -112,6 +128,10 @@ repeat
 	)
 	--print(mot:status())
 until(nxt.ButtonRead() == 8)
+
+----------------------------------
+-------continuously scanning------
+----------------------------------
 
 repeat 
 	print(s:scan())
