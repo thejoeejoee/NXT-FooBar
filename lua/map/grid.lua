@@ -11,11 +11,11 @@ function Grid.new()
 
 	o.p_Grid = {}
 
-	for x = 1, Grid.Width do
-		o.p_Grid[x] = {}
+	for y = 1, Grid.Height do
+		o.p_Grid[y] = {}
 
-		for y = 1, Grid.Height do
-			o.p_Grid[x][y] = UnknowSegment.new(x, y)
+		for y = 1, Grid.Width do
+			o.p_Grid[y][x] = UnknowSegment.new(x, y)
 		end
 	end
 
@@ -30,6 +30,8 @@ function Grid:get(position)
 end
 
 function Grid:set(position, segment)
-	print(segment)
-	print(segment.new(1,2))
+	if type(position) == "table" and #position == 2 then
+		self.p_Grid[position[0]][position[1]] = segment.new(position[0], position[1])
+	end
 end
+
