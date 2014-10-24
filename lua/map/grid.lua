@@ -23,4 +23,13 @@ function Grid.new()
     return o
 end
 
+function Grid:get(position)
+	if type(position) == "table" and #position == 2 then
+		return self.p_Grid[position[0]][position[1]]
+	end
+end
 
+function Grid:set(position, segment)
+	print(segment)
+	print(segment.new(1,2))
+end
