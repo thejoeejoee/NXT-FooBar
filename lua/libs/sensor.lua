@@ -8,7 +8,7 @@ Sensor = {
 function Sensor.new(port)
         local o = {}
  
-        o.p_Port = port or 1
+        o.__port = port or 1
  
         setmetatable(o, {__index = Sensor})
         return o

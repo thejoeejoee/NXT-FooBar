@@ -23,12 +23,12 @@ function UltraSonic.new(port)
 end
  
 function UltraSonic:scan()
-	nxt.I2CSendData(self.p_Port, nxt.I2Cdata, 8)
+	nxt.I2CSendData(self.__port, nxt.I2Cdata, 8)
 	
-	while( 0 ~= nxt.I2CGetStatus( self.p_Port ) ) do
+	while( 0 ~= nxt.I2CGetStatus( self.__port ) ) do
   	end
 
-    local s = nxt.I2CRecvData(self.p_Port, 8)
+    local s = nxt.I2CRecvData(self.__port, 8)
     local result = string.byte(s,1,8)
 
     return result

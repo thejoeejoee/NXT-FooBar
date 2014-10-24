@@ -9,13 +9,13 @@ Grid = {
 function Grid.new()
 	local o = {}
 
-	o.p_Grid = {}
+	o.__grid = {}
 
 	for y = 1, Grid.Height do
-		o.p_Grid[y] = {}
+		o.__grid[y] = {}
 
 		for y = 1, Grid.Width do
-			o.p_Grid[y][x] = UnknowSegment.new(x, y)
+			o.__grid[y][x] = UnknowSegment.new(x, y)
 		end
 	end
 
@@ -25,13 +25,13 @@ end
 
 function Grid:get(position)
 	if type(position) == "table" and #position == 2 then
-		return self.p_Grid[position[0]][position[1]]
+		return self.__grid[position[0]][position[1]]
 	end
 end
 
 function Grid:set(position, segment)
 	if type(position) == "table" and #position == 2 then
-		self.p_Grid[position[0]][position[1]] = segment.new(position[0], position[1])
+		self.__grid[position[0]][position[1]] = segment.new(position[0], position[1])
 	end
 end
 
