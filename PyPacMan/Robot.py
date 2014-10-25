@@ -5,6 +5,7 @@ from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
 
+
 class Robot(object):
     # requiring x and y depends on robosoutez.cz
     def __init__(self, grid, robot_hardware, x=None, y=None):
@@ -23,29 +24,48 @@ class Robot(object):
         self.__hardware = robot_hardware
         self.__last_direction = None
 
-    def is_closed_way(self, in_side, position=None, length=0):
+    def solve_closed_way(self, source_position, source_side):
+        self.tested_position = []
+        return self.is_closed_way(source_position, source_side)
+
+    def is_closed_way(self, source_position, source_side, length=1):
         """
         some recursive magic about closed ways problem
         :return:
         """
-        if position is None:
-            position = self.__position
+        if source_position is None:
+            source_position = self.__position
+        if length > MAX_GRID_RECURSIVE_DEPTH:
+            return False
+        target_position = Grid.get_next_position(source_side, source_position)  # zjisti pozici, ze ktere bude testovat
+        if not Grid.exists_position(target_position):
+            return True
 
+        if isinstance(self.__grid[target_position], Block):
+            return True
 
-        free_sides = []
-        for side in DIRECTIONS:
-            next_position = Grid.get_next_position(side, position)
-            if not Grid.exists_position(next_position):
+        sides = list(DIRECTIONS)
+        sides.remove(Grid.get_oposite_side(source_side))  # bez vstupni strany
+        free_sides = []  # slovnik indexovany stranou oznacujici blokovany pozice
+        for side in sides:
+            position = Grid.get_next_position(side, target_position)
+            if not Grid.exists_position(position):  # pokud pozice neexistuje, je blokovano
                 continue
-            next_segment = self.__grid[next_position]
-            if isinstance(next_segment, Point):
-                free_sides.append(self.is_closed_way(side, next_position, length+1))
+            if position in self.tested_position: # jiz byl testovan, nebudu testovat
+                continue
             else:
-                free_sides.append(False)
-        print(free_sides)
+                self.tested_position.append(position)
 
-
-
+            segment = self.__grid[position]  # vytazeni vedlejsiho segmentu
+            if isinstance(segment, (Point, UnknownSegment)):  # pokud to je block, je blokovany
+                free_sides.append(side)
+        if len(free_sides) == 0:  # pokud zadny volny, je blokovany
+            return True
+        blocked = []
+        print('    '*(length-1)+'from {} is free {} - ({})'.format(target_position, free_sides, length))
+        for side in free_sides:
+            blocked.append(self.is_closed_way(source_position=target_position, source_side=side, length=length + 1))
+        return all(blocked)
 
 
     def check_sides(self):

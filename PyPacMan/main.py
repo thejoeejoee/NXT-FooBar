@@ -16,20 +16,23 @@ DIMENSIONS
 
 grid = Grid()
 robot_hardware = RobotHardware()
-grid[1, 0] = Block
+grid[3, 0] = Block
 grid[1, 1] = Block
+grid[4, 1] = Block
+grid[7, 1] = Block
 grid[1, 2] = Block
-grid[1, 3] = Block
-grid[1, 4] = Block
-
+grid[6, 2] = Block
+grid[0, 3] = Block
+grid[6, 3] = Block
+grid[8, 4] = Block
 grid[0, 5] = Block
-
-grid[0, 1] = Point
-grid[0, 2] = Point
-grid[0, 3] = Point
-grid[0, 4] = Point
+grid[5, 5] = Block
 
 r = Robot(grid, robot_hardware, 0, 0)
+
+x = r.solve_closed_way(source_position=None, source_side=1)
+print('Blocked?')
+print(x)
 print(r)
 
 
