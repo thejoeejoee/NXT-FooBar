@@ -20,7 +20,6 @@ Segment_Meta = {
 	end
 }
 
-
 function Segment.new(x, y)
 	local o = {} 
 
