@@ -4,9 +4,11 @@ UnknowSegment = {}
 
 function UnknowSegment.new(x, y)
 	local o = Segment.new(x, y)
+	local meta = getmetatable(o)
 
-	o.__type = "point"
+	o.__type = "unknowsegment"
+	meta.__index = UnknowSegment
 
-	setmetatable(o, getmetatable(o))
+	setmetatable(o, meta)
 	return o
 end
