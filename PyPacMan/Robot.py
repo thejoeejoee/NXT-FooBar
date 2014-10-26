@@ -28,7 +28,7 @@ class Robot(object):
         self.tested_position = []
         return self.is_closed_way(source_position, source_side)
 
-    def is_closed_way(self, source_position, source_side, length=1):
+    def is_closed_way(self, source_side, source_position, length=1):
         """
         some recursive magic about closed ways problem
         :return:

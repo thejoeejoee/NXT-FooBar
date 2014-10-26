@@ -4,7 +4,8 @@ dofile("directions.lua")
 Grid = {
 	Width = 9,
 	Height = 6,
-	MaxCountBlock = 11
+	MaxCountBlock = 11,
+    MaxGridRecursiseDepth = 10
 }
  
 function Grid.new()
