@@ -37,7 +37,7 @@ function Grid:set(position, segment)
 	end
 end
 
-function Grid:position_exits(position)
+function Grid:positionExists(position)
 	if position[0] < 0 or position[1] < 0 then
 		return false
 	elseif position[0] > Grid.Width - 1 or position[1] > Grid.Height - 1 then
@@ -47,7 +47,7 @@ function Grid:position_exits(position)
 	return true 
 end
 
-function Grid:getNextPosition(side, position)
+function Grid:nextPosition(side, position)
 	if side == Directions.Top then
 		return {position[0], position[1] - 1}
 	elseif side == Directions.Right then
