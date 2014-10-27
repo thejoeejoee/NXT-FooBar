@@ -7,8 +7,7 @@ from PyPacMan.UnknownSegment import UnknownSegment
 
 
 class Robot(object):
-    # requiring x and y depends on robosoutez.cz
-    def __init__(self, grid, robot_hardware, x=None, y=None):
+    def __init__(self, grid, robot_hardware, x=4, y=3):
         """
         :param grid: Grid
         :param robot_hardware RobotHardware
