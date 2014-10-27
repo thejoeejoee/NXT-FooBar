@@ -1,13 +1,13 @@
 from PyPacMan.RobotHardware import RobotHardware
 from PyPacMan.Grid import Grid
-from PyPacMan.settings import DIRECTIONS, MAX_GRID_RECURSIVE_DEPTH
+from PyPacMan.settings import DIRECTIONS, GRID_MAX_RECURSIVE_DEPTH, ROBOT_DEFAULT_POSITION
 from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
 
 
 class Robot(object):
-    def __init__(self, grid, robot_hardware, x=4, y=3):
+    def __init__(self, grid, robot_hardware, position = ROBOT_DEFAULT_POSITION):
         """
         :param grid: Grid
         :param robot_hardware RobotHardware
@@ -17,9 +17,9 @@ class Robot(object):
         assert isinstance(grid, Grid)
         assert isinstance(robot_hardware, RobotHardware)
         self.__grid = grid
-        self.__x = x
-        self.__y = y
-        self.__position = x, y
+        self.__x = position[0]
+        self.__y = position[1]
+        self.__position = position
         self.__hardware = robot_hardware
         self.__last_direction = None
 
@@ -34,7 +34,7 @@ class Robot(object):
         """
         if source_position is None:
             source_position = self.__position
-        if length > MAX_GRID_RECURSIVE_DEPTH:
+        if length > GRID_MAX_RECURSIVE_DEPTH:
             return False
         target_position = Grid.get_next_position(source_side, source_position)  # zjisti pozici, ze ktere bude testovat
         if not Grid.exists_position(target_position):
@@ -84,9 +84,9 @@ class Robot(object):
                     scan_line = True
                 next_position = Grid.get_next_position(side, next_position)
             if scan_line:
-                self.scan_line(side, self.__position)
+                self.scan_line(side)
 
-    def scan_line(self, side, position):
+    def scan_line(self, side):
         """
         call hardware and set segments into grid
         :param side: int
@@ -103,18 +103,12 @@ class Robot(object):
         self.set_known_segment(end_position, Block)
 
     def set_known_segment(self, position, segment_class):
-        """
-        :param position:
-        :param segment_class:
-        :return:
-        """
         if Grid.exists_position(position):
             if isinstance(self.__grid[position], UnknownSegment):
                 self.__grid[position] = segment_class
             else:
                 # fuck it, hardware or grid lies
-                print(
-                    'On {} I want set {}, but here is {}.'.format(position, segment_class, type(self.__grid[position])))
+                print('On {} I want set {}, but here is {}.'.format(position, segment_class, type(self.__grid[position])))
             return True
         else:
             return False

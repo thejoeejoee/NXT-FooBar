@@ -23,11 +23,11 @@ g[1, 2] = Block
 g[2, 3] = Block
 g[3, 4] = Block
 g[3, 5] = Block
-g:set({1, 5}, Block)
+g[1, 5] = Block
 
 
 
-r = Robot(g, robot_hardware, 0, 0)
+r = Robot(g, robot_hardware, (0, 0))
 
 x = r.solve_closed_way(source_position=None, source_side=2)
 print('Blocked?')
