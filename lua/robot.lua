@@ -19,8 +19,18 @@ function Robot.new(grid, robotHardware, position)
 end
 
 function Robot:solveClosedWay(source_side, source_position)
-    self.testedPostitions = {}
+    self.testedPositions = {}
     return self:isClosedWay(source_side, source_position)
+end
+
+function __valueInTable(value, tab)
+    for _, v in pairs(tab) do
+        if v == value then
+            return true
+        end
+    end
+
+    return false
 end
 
 function Robot:isClosedWay(source_side, source_position, length)
@@ -30,7 +40,7 @@ function Robot:isClosedWay(source_side, source_position, length)
     local sides = {}
     local free_sides = {}
     local blocked = {}
-
+print(length)
     if length > Grid.MaxGridRecursiveDepth then
         return false
     end
@@ -58,22 +68,24 @@ function Robot:isClosedWay(source_side, source_position, length)
             goto continue
         end
         -- zde to sony musi udelat -> viz. python
- 
+        if __valueInTable(position, self.testedPositions) then
+            goto continue
+        else
+            table.insert(self.testedPositions, position)
+        end
+
         local segment = self.__grid:get(position)
-        print(segment.__type)
-        if segment("point", "unknownsegment") then
-            print("foobar")
+        if segment({"point", "unknownsegment"}) then
             table.insert(free_sides, side)
         end
         ::continue::
     end
 
     if #free_sides == 0 then
-        print("free sides")
         return true
     end
     
-    for _, side in pairs(free_side) do
+    for _, side in pairs(free_sides) do
         table.insert(blocked, self:isClosedWay(side, target_position, length+1))
     end
 
