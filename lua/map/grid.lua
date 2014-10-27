@@ -1,11 +1,11 @@
-dofile("unknowsegment.lua")
-dofile("directions.lua")
+nxt.dofile("unknown")
+nxt.dofile("directions")
 
 Grid = {
 	Width = 9,
 	Height = 6,
 	MaxCountBlock = 11,
-    MaxGridRecursiseDepth = 10
+    MaxGridRecursiveDepth = 10
 }
  
 function Grid.new()
@@ -13,11 +13,11 @@ function Grid.new()
 
 	o.__grid = {}
 
-	for y = 1, Grid.Height do
+	for y = 0, Grid.Height - 1 do
 		o.__grid[y] = {}
 
-		for y = 1, Grid.Width do
-			o.__grid[y][x] = UnknowSegment.new(x, y)
+		for x = 0, Grid.Width - 1 do
+			o.__grid[y][x] = UnknownSegment.new(x, y)
 		end
 	end
 
@@ -27,20 +27,20 @@ end
 
 function Grid:get(position)
 	if type(position) == "table" and #position == 2 then
-		return self.__grid[position[0]][position[1]]
+		return self.__grid[position[2]][position[1]]
 	end
 end
 
 function Grid:set(position, segment)
 	if type(position) == "table" and #position == 2 then
-		self.__grid[position[0]][position[1]] = segment.new(position[0], position[1])
+		self.__grid[position[2]][position[1]] = segment.new(position[1], position[2])
 	end
 end
 
 function Grid:positionExists(position)
-	if position[0] < 0 or position[1] < 0 then
+	if position[1] < 0 or position[2] < 0 then
 		return false
-	elseif position[0] > Grid.Width - 1 or position[1] > Grid.Height - 1 then
+	elseif position[1] > Grid.Width - 1 or position[2] > Grid.Height - 1 then
 		return false
 	end
 
@@ -49,13 +49,13 @@ end
 
 function Grid:nextPosition(side, position)
 	if side == Directions.Top then
-		return {position[0], position[1] - 1}
+		return {position[1], position[2] - 1}
 	elseif side == Directions.Right then
-		return {position[0] + 1, position[1]}
+		return {position[1] + 1, position[2]}
 	elseif side == Directions.Bottom then
-		return {position[0], position[1] + 1}
+		return {position[1], position[2] + 1}
 	elseif side == Directions.Left then
-		return {position[0] - 1, position[1]}
+		return {position[1] - 1, position[2]}
 	else
 		error("exBadIndex")
 	end
@@ -68,13 +68,3 @@ function Grid:oppositeSide(side)
 		return side - 2
 	end
 end
-
-
-
-
-
-
-
-
-
-

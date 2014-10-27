@@ -1,4 +1,5 @@
 dofile("segment.lua")
+dofile("point.lua")
 
 UnknownSegment = {}
 
@@ -12,3 +13,6 @@ function UnknownSegment.new(x, y)
 	setmetatable(o, meta)
 	return o
 end
+
+t = UnknownSegment.new(1,2)
+print(t("point","unknownsegment"))
