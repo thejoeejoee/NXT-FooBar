@@ -1,4 +1,4 @@
-dofile("segment.lua")
+nxt.dofile("segment")
 
 Block = {}
 
