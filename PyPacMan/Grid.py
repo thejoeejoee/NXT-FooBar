@@ -1,6 +1,8 @@
+from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
-from PyPacMan.settings import GRID_DEFAULT_WIDTH, GRID_DEFAULT_HEIGHT, GRID_SEGMENTS, DIRECTIONS, Diretions
+from PyPacMan.settings import GRID_DEFAULT_WIDTH, GRID_DEFAULT_HEIGHT, GRID_SEGMENTS, SIDES, Sides, Directions, \
+    GRID_MAX_POINTS
 
 
 class Grid(object):
@@ -14,6 +16,7 @@ class Grid(object):
         self.width = width
         self.height = height
         self.__grid = [[UnknownSegment(_x, _y) for _y in range(height)] for _x in range(width)]
+        self.__collected = 0
 
     def __getitem__(self, indexes):
         if isinstance(indexes, tuple) and len(indexes) == 2:
@@ -32,22 +35,22 @@ class Grid(object):
             raise IndexError('Unknown index')
         return self
 
-    def get_column(self, x):
-        return self.__grid[x]
-
-    def get_row(self, y):
-        row = []
-        for each_column in self.__grid:
-            row.append(each_column[y])
-        return row
-
-    def get_whole_grid(self):
-        return self.__grid
+    def collect(self, position):
+        assert isinstance(position, tuple) and len(position) == 2
+        assert Grid.exists_position(position)
+        if isinstance(self[position], Block):
+            print('fuck, I moving into block')
+        else:
+            self[position] = Point
+        self[position].collect()
+        self.__collected += 1
+        if self.__collected == GRID_MAX_POINTS:
+            print('quest successful finished')
 
     def get_free_directions(self, position, unknown_segments=True):
         assert len(position) == 2
         free_directions = []
-        for side in DIRECTIONS:
+        for side in SIDES:
             side_position = Grid.get_next_position(side, position)
             if not Grid.exists_position(side_position):
                 continue
@@ -83,8 +86,16 @@ class Grid(object):
 
     @staticmethod
     def get_oposite_side(side):
-        assert side in DIRECTIONS
-        if side in (Diretions.top, Diretions.right):
+        assert side in SIDES
+        if side in (Sides.top, Sides.right):
             return side + 2
-        elif side in (Diretions.bottom, Diretions.left):
+        elif side in (Sides.bottom, Sides.left):
             return side - 2
+
+    @staticmethod
+    def normalize_side(side):
+        assert side in SIDES
+        if side in (Sides.left, Sides.right):
+            return Directions.horizont
+        elif side in (Sides.top, Sides.bottom):
+            return Directions.vertical

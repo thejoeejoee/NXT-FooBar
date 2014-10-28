@@ -7,24 +7,38 @@ SONIC_SENSOR_INACCURACY = 3
 GRID_MAX_RECURSIVE_DEPTH = 10
 GRID_DEFAULT_WIDTH = 9
 GRID_DEFAULT_HEIGHT = 6
-ROBOT_DEFAULT_POSITION = (4, 3)
+GRID_START_BLOCKS = 2
+GRID_BLOCKS = 11
+GRID_MAX_POINTS = GRID_DEFAULT_HEIGHT * GRID_DEFAULT_WIDTH - GRID_START_BLOCKS - GRID_BLOCKS - 1
+print(GRID_MAX_POINTS)
+ROBOT_DEFAULT_START_POSITION = (4, 3)
 
 
-class Diretions():
+class RobotModes():
+    waiting = 0
+    in_closed_way = 1
+
+
+class Directions():
+    horizont = 0
+    vertical = 1
+
+
+class Sides():
     top = 0
     right = 1
     bottom = 2
     left = 3
 
 
-DIRECTIONS = (
-    Diretions.top,
-    Diretions.right,
-    Diretions.bottom,
-    Diretions.left,
+SIDES = (
+    Sides.top,
+    Sides.right,
+    Sides.bottom,
+    Sides.left,
 )
 
-DIRECTIONS_NAMES = (
+SIDES_NAMES = (
     'top',
     'right',
     'bottom',
