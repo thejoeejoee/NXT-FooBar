@@ -1,11 +1,15 @@
-nxt.dofile("unknown")
 nxt.dofile("directions")
 
 Grid = {
-	Width = 9,
-	Height = 6,
+	Width = 4,
+	Height = 4,
 	MaxCountBlock = 11,
-    MaxGridRecursiveDepth = 10
+    MaxGridRecursiveDepth = 20,
+
+    UnknownSegment = "u",
+    Block = "b",
+    Point = "p",
+    CollectedPoint = "c"
 }
  
 function Grid.new()
@@ -17,7 +21,7 @@ function Grid.new()
 		o.__grid[y] = {}
 
 		for x = 0, Grid.Width - 1 do
-			o.__grid[y][x] = UnknownSegment.new(x, y)
+			o.__grid[y][x] = "u"
 		end
 	end
 
@@ -33,8 +37,20 @@ end
 
 function Grid:set(position, segment)
 	if type(position) == "table" and #position == 2 then
-		self.__grid[position[2]][position[1]] = segment.new(position[1], position[2])
+		self.__grid[position[2]][position[1]] = segment
 	end
+end
+
+function Grid:checkSegment(position, list)
+	local segment = self:get(position)
+
+	for k, v in pairs(list) do
+		if v == segment then
+			return true
+		end
+	end
+
+	return false
 end
 
 function Grid:positionExists(position)

@@ -25,7 +25,7 @@ end
 
 function __valueInTable(value, tab)
     for _, v in pairs(tab) do
-        if v == value then
+        if v[1] == value[1] and v[2] == value[2] then
             return true
         end
     end
@@ -40,7 +40,7 @@ function Robot:isClosedWay(source_side, source_position, length)
     local sides = {}
     local free_sides = {}
     local blocked = {}
-print(length)
+
     if length > Grid.MaxGridRecursiveDepth then
         return false
     end
@@ -51,7 +51,7 @@ print(length)
         return true
     end
 
-    if self.__grid:get(target_position)('block') then
+    if self.__grid:checkSegment(target_position, {Grid.Block}) then
         return true
     end
 
@@ -75,7 +75,7 @@ print(length)
         end
 
         local segment = self.__grid:get(position)
-        if segment({"point", "unknownsegment"}) then
+        if self.__grid:checkSegment(position, {Grid.Point, Grid.UnknownSegment, Grid.CollectedPoint}) then
             table.insert(free_sides, side)
         end
         ::continue::
@@ -91,34 +91,9 @@ print(length)
 
     for _, bool in pairs(blocked) do
         if bool == false then
-            all = true
+            all = false
         end
     end
 
     return all
 end
-
-nxt.dofile("block")
-g = Grid:new()
-
-g:set({1, 0}, Block)
---g:set({1, 1}, Block)
-g:set({2, 1}, Block)
-g:set({3, 2}, Block)
-g:set({0, 3}, Block)
-g:set({2, 3}, Block)
-
-r = Robot.new(g, nil, {0, 0})
-print(r:solveClosedWay(Directions.Bottom))
-
-
-
-
-
-
-
-
-
-
-
-
