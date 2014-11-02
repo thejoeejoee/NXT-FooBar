@@ -23,7 +23,7 @@ class RobotHardware(object):
         elif offset > SEGMENT_WIDTH - SONIC_SENSOR_INACCURACY:
             blocks = probably_blocks + 1
         else:
-            raise BrokenPipeError('Unknown data from ultrasonic sensor, value: {}.'.format(length))
+            raise Exception('Unknown data from ultrasonic sensor, value: {}.'.format(length))
         return int(blocks)
 
     def move(self, side, length):
@@ -39,4 +39,6 @@ class RobotHardware(object):
         # #####################################
         # SOME HW MAGIC
         # #####################################
+        self.last_direction = direction
         print('direction changed to {}'.format(direction))
+        pass

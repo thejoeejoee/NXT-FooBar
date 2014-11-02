@@ -39,13 +39,20 @@ class Grid(object):
         assert isinstance(position, tuple) and len(position) == 2
         assert Grid.exists_position(position)
         if isinstance(self[position], Block):
-            print('fuck, I moving into block')
-        else:
+            assert False, 'I want to {}, but it is Block'.format(position)
+        elif isinstance(self[position], UnknownSegment):
             self[position] = Point
-        self[position].collect()
-        self.__collected += 1
-        if self.__collected == GRID_MAX_POINTS:
-            print('quest successful finished')
+            #assert False, 'I want to {}, but it is UnknownSegment'.format(position).
+
+        if isinstance(self[position], Point):
+            if not self[position].is_collected():
+                self[position].collect()
+                self.__collected += 1
+        else:
+            raise Exception
+
+    def is_solved(self):
+        return self.__collected > GRID_MAX_POINTS
 
     def get_free_directions(self, position, unknown_segments=True):
         assert len(position) == 2

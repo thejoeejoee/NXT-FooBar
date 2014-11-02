@@ -10,6 +10,6 @@ class UnknownSegment(Segment):
         super(UnknownSegment, self).__init__(x, y)
 
     def __str__(self):
-        return '[{}-{}]'.format(self._x, self._y)
+        return '[---]'#.format(self._x, self._y)
 
 
