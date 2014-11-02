@@ -64,13 +64,13 @@ function Grid:positionExists(position)
 end
 
 function Grid:nextPosition(side, position)
-	if side == Directions.Top then
+	if side == Sides.Top then
 		return {position[1], position[2] - 1}
-	elseif side == Directions.Right then
+	elseif side == Sides.Right then
 		return {position[1] + 1, position[2]}
-	elseif side == Directions.Bottom then
+	elseif side == Sides.Bottom then
 		return {position[1], position[2] + 1}
-	elseif side == Directions.Left then
+	elseif side == Sides.Left then
 		return {position[1] - 1, position[2]}
 	else
 		error("exBadIndex")
@@ -78,9 +78,9 @@ function Grid:nextPosition(side, position)
 end
 
 function Grid:oppositeSide(side)
-	if side == Directions.Top or side == Directions.Right then
+	if side == Sides.Top or side == Sides.Right then
 		return side + 2
-	elseif side == Directions.Bottom or side == Directions.Left then
+	elseif side == Sides.Bottom or side == Sides.Left then
 		return side - 2
 	end
 end
