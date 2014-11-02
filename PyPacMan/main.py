@@ -1,6 +1,5 @@
 from __future__ import print_function
 from PyPacMan.Grid import Grid
-from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.Robot import Robot
 from PyPacMan.RobotHardware import RobotHardware
@@ -37,4 +36,4 @@ print('Blocked?')
 print(r)
 print(r.positions_history)
 
-
+print(r.get_sides_by_points())

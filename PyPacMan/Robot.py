@@ -1,13 +1,13 @@
 from PyPacMan.RobotHardware import RobotHardware
 from PyPacMan.Grid import Grid
-from PyPacMan.settings import SIDES, GRID_MAX_RECURSIVE_DEPTH, ROBOT_DEFAULT_START_POSITION, RobotModes
+from PyPacMan.settings import DIRECTIONS, MAX_GRID_RECURSIVE_DEPTH, Diretions
 from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
 
 
 class Robot(object):
-    def __init__(self, grid, robot_hardware, position=ROBOT_DEFAULT_START_POSITION):
+    def __init__(self, grid, robot_hardware, position):
         """
         :param grid: Grid
         :param robot_hardware RobotHardware
@@ -22,20 +22,22 @@ class Robot(object):
         self.__position = position
         self.__hardware = robot_hardware
         self.__last_direction = None
-        self.__mode = RobotModes.waiting
+        #self.__mode = RobotModes.waiting
         self.positions_history = []
         self.positions_history.append(position)
 
-    def is_closed_way(self, source_position, source_side, length=1):
+
+    def is_closed_way(self, source_side, source_position, length=1):
         """
         some recursive magic about closed ways problem
         :return:
         """
         if length == 1:
             self.tested_positions = []
+
         if source_position is None:
             source_position = self.__position
-        if length > GRID_MAX_RECURSIVE_DEPTH:
+        if length > MAX_GRID_RECURSIVE_DEPTH:
             return False
         target_position = Grid.get_next_position(source_side, source_position)  # zjisti pozici, ze ktere bude testovat
         if not Grid.exists_position(target_position):
@@ -44,7 +46,7 @@ class Robot(object):
         if isinstance(self.__grid[target_position], Block):
             return True
 
-        sides = list(SIDES)
+        sides = list(DIRECTIONS)
         sides.remove(Grid.get_oposite_side(source_side))  # bez vstupni strany
         free_sides = []  # slovnik indexovany stranou oznacujici volne strany
         for side in sides:
@@ -62,7 +64,7 @@ class Robot(object):
         if len(free_sides) == 0:  # pokud zadny volny, je blokovany
             return True
         blocked = []
-        print('    '*(length-1)+'from {} is free {} - ({})'.format(target_position, free_sides, length))
+        print('    ' * (length - 1) + 'from {} is free {} - ({})'.format(target_position, free_sides, length))
         for side in free_sides:
             blocked.append(self.is_closed_way(source_position=target_position, source_side=side, length=length + 1))
         return all(blocked)
@@ -71,7 +73,7 @@ class Robot(object):
         """
         tests, if robot has reason to sonic check the line
         """
-        for side in SIDES:
+        for side in DIRECTIONS:
             scan_line = False
             next_position = Grid.get_next_position(side, self.__position)
             if not Grid.exists_position(next_position):
@@ -112,8 +114,37 @@ class Robot(object):
         else:
             return False
 
+    def get_sides_by_points(self):
+        sides = []
+        for side in DIRECTIONS:
+            segments = []
+            if side == Diretions.top:
+                y = 0
+                while y <= self.__y:
+                    segments.extend(self.__grid.get_row(y))
+                    y += 1
+            elif side == Diretions.right:
+                x = self.__x
+                while x < self.__grid.width:
+                    segments.extend(self.__grid.get_column(x))
+                    x += 1
+            elif side == Diretions.bottom:
+                y = self.__y
+                while y < self.__grid.height:
+                    segments.extend(self.__grid.get_row(y))
+                    y += 1
+            elif side == Diretions.left:
+                x = 0
+                while x <= self.__x:
+                    segments.extend(self.__grid.get_column(x))
+                    x += 1
+            sides.append((side, len(
+                filter(lambda segment: isinstance(segment, Point) and not segment.collected, segments)) / float(
+                len(segments))))
+        return tuple(sorted(sides, key=lambda item: item[1], reverse=True))
+
     def move(self, side, length=1):
-        assert side in SIDES
+        assert side in DIRECTIONS
         new_position = self.__position
         for _ in range(length):
             new_position = Grid.get_next_position(side, new_position)
@@ -130,7 +161,7 @@ class Robot(object):
 
     def solve_closed_way(self, side):
         start_position = self.__position
-        self.__mode = RobotModes.in_closed_way
+        #self.__mode = RobotModes.in_closed_way
         position = Grid.get_next_position(side, self.__position)
         length = 0
         while Grid.exists_position(position) and not isinstance(self.__grid[position], Block):
