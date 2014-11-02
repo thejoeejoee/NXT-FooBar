@@ -68,6 +68,18 @@ class Grid(object):
                 continue
         return tuple(free_directions)
 
+    def get_column(self, x):
+        return self.__grid[x]
+
+    def get_row(self, y):
+        row = []
+        for each_column in self.__grid:
+            row.append(each_column[y])
+        return row
+
+    def get_whole_grid(self):
+        return self.__grid
+
     @staticmethod
     def exists_position(position, width=GRID_DEFAULT_WIDTH, height=GRID_DEFAULT_HEIGHT):
         assert len(position) == 2

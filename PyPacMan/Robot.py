@@ -1,13 +1,13 @@
 from PyPacMan.RobotHardware import RobotHardware
 from PyPacMan.Grid import Grid
-from PyPacMan.settings import DIRECTIONS, MAX_GRID_RECURSIVE_DEPTH, Diretions
+from PyPacMan.settings import SIDES, GRID_MAX_RECURSIVE_DEPTH, Directions, ROBOT_DEFAULT_START_POSITION, Sides
 from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
 
 
 class Robot(object):
-    def __init__(self, grid, robot_hardware, position):
+    def __init__(self, grid, robot_hardware, position=ROBOT_DEFAULT_START_POSITION):
         """
         :param grid: Grid
         :param robot_hardware RobotHardware
@@ -114,37 +114,38 @@ class Robot(object):
         else:
             return False
 
-    def get_sides_by_points(self):
-        sides = []
-        for side in DIRECTIONS:
+    def get_sides_by_points(self, exclude_sides):
+        side_results = []
+        sides = [side for side in SIDES if side not in exclude_sides]
+        for side in sides:
             segments = []
-            if side == Diretions.top:
+            if side == Sides.top:
                 y = 0
                 while y <= self.__y:
                     segments.extend(self.__grid.get_row(y))
                     y += 1
-            elif side == Diretions.right:
+            elif side == Sides.right:
                 x = self.__x
                 while x < self.__grid.width:
                     segments.extend(self.__grid.get_column(x))
                     x += 1
-            elif side == Diretions.bottom:
+            elif side == Sides.bottom:
                 y = self.__y
                 while y < self.__grid.height:
                     segments.extend(self.__grid.get_row(y))
                     y += 1
-            elif side == Diretions.left:
+            elif side == Sides.left:
                 x = 0
                 while x <= self.__x:
                     segments.extend(self.__grid.get_column(x))
                     x += 1
-            sides.append((side, len(
-                filter(lambda segment: isinstance(segment, Point) and not segment.collected, segments)) / float(
+            side_results.append((side, len(
+                filter(lambda segment: isinstance(segment, Point) and not segment.is_collected(), segments)) / float(
                 len(segments))))
-        return tuple(sorted(sides, key=lambda item: item[1], reverse=True))
+        return tuple(sorted(side_results, key=lambda item: item[1], reverse=True))
 
     def move(self, side, length=1):
-        assert side in DIRECTIONS
+        assert side in SIDES
         new_position = self.__position
         for _ in range(length):
             new_position = Grid.get_next_position(side, new_position)
