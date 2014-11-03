@@ -1,3 +1,4 @@
+from random import shuffle
 from PyPacMan.RobotHardware import RobotHardware
 from PyPacMan.Grid import Grid
 from PyPacMan.settings import SIDES, GRID_MAX_RECURSIVE_DEPTH, Directions, ROBOT_DEFAULT_START_POSITION, Sides
@@ -22,6 +23,7 @@ class Robot(object):
         self.__position = position
         self.__hardware = robot_hardware
         self.__last_direction = None
+        self.sides_history = []
         #self.__mode = RobotModes.waiting
         self.positions_history = []
         self.positions_history.append(position)
@@ -37,7 +39,7 @@ class Robot(object):
 
         if source_position is None:
             source_position = self.__position
-        if length > MAX_GRID_RECURSIVE_DEPTH:
+        if length > GRID_MAX_RECURSIVE_DEPTH:
             return False
         target_position = Grid.get_next_position(source_side, source_position)  # zjisti pozici, ze ktere bude testovat
         if not Grid.exists_position(target_position):
@@ -46,7 +48,7 @@ class Robot(object):
         if isinstance(self.__grid[target_position], Block):
             return True
 
-        sides = list(DIRECTIONS)
+        sides = list(SIDES)
         sides.remove(Grid.get_oposite_side(source_side))  # bez vstupni strany
         free_sides = []  # slovnik indexovany stranou oznacujici volne strany
         for side in sides:
@@ -73,7 +75,7 @@ class Robot(object):
         """
         tests, if robot has reason to sonic check the line
         """
-        for side in DIRECTIONS:
+        for side in SIDES:
             scan_line = False
             next_position = Grid.get_next_position(side, self.__position)
             if not Grid.exists_position(next_position):
@@ -114,29 +116,45 @@ class Robot(object):
         else:
             return False
 
-    def get_sides_by_points(self, exclude_sides):
+    def get_sides_by_points(self, exclude_sides=[]):
         side_results = []
-        sides = [side for side in SIDES if side not in exclude_sides]
+        include_sides = []
+        sides = list(SIDES)
+        shuffle(sides)
         for side in sides:
+            if side in exclude_sides:
+                continue
+            position = Grid.get_next_position(side, self.__position)
+            if not Grid.exists_position(position):
+                continue
+            segment = self.__grid[position]
+            if isinstance(segment, Block):
+                continue
+            include_sides.append(side)
+
+        if len(include_sides) == 0:
+            return [[Grid.get_oposite_side(self.sides_history[-1])]]
+
+        for side in include_sides:
             segments = []
             if side == Sides.top:
                 y = 0
-                while y <= self.__y:
+                while y < self.__y:
                     segments.extend(self.__grid.get_row(y))
                     y += 1
             elif side == Sides.right:
-                x = self.__x
+                x = self.__x + 1
                 while x < self.__grid.width:
                     segments.extend(self.__grid.get_column(x))
                     x += 1
             elif side == Sides.bottom:
-                y = self.__y
+                y = self.__y + 1
                 while y < self.__grid.height:
                     segments.extend(self.__grid.get_row(y))
                     y += 1
             elif side == Sides.left:
                 x = 0
-                while x <= self.__x:
+                while x < self.__x:
                     segments.extend(self.__grid.get_column(x))
                     x += 1
             side_results.append((side, len(
@@ -147,6 +165,7 @@ class Robot(object):
     def move(self, side, length=1):
         assert side in SIDES
         new_position = self.__position
+        self.sides_history.append(side)
         for _ in range(length):
             new_position = Grid.get_next_position(side, new_position)
             assert Grid.exists_position(new_position)

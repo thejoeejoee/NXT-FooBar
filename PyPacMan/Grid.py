@@ -15,8 +15,9 @@ class Grid(object):
         assert isinstance(height, int)
         self.width = width
         self.height = height
-        self.__grid = [[UnknownSegment(_x, _y) for _y in range(height)] for _x in range(width)]
+        self.__grid = [[Point(_x, _y) for _y in range(height)] for _x in range(width)]
         self.__collected = 0
+        self.__last_collected_position = (0, 0)
 
     def __getitem__(self, indexes):
         if isinstance(indexes, tuple) and len(indexes) == 2:
@@ -46,6 +47,9 @@ class Grid(object):
 
         if isinstance(self[position], Point):
             if not self[position].is_collected():
+
+                print((abs(self.__last_collected_position[0]-position[0])**2 + (abs(self.__last_collected_position[1]-position[1])**2))**0.5)
+                self.__last_collected_position = position
                 self[position].collect()
                 self.__collected += 1
         else:

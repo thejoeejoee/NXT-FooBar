@@ -6,9 +6,11 @@ from PyPacMan.Point import Point
 
 from PyPacMan.Robot import Robot
 from PyPacMan.RobotHardware import RobotHardware
-from PyPacMan.settings import SIDES
+from PyPacMan.settings import SIDES, ROBOT_DEFAULT_START_POSITION, MAPS
 from random import random
 from math import floor
+
+import wx
 """
 DIMENSIONS
 0 - top
@@ -22,47 +24,33 @@ DIMENSIONS
 #print(r)
 
 def solve(r):
+    r.sides_history.extend((2,))
     while not g.is_solved():
         #r.check_sides()
         #side = SIDES[int(floor(random()*4))]
-
-        exclude_sides = []
-        for side in SIDES:
-            position = Grid.get_next_position(side, r._Robot__position)
-            if not Grid.exists_position(position):
-                exclude_sides.append(side)
-                continue
-            segment = r._Robot__grid[position]
-            if isinstance(segment, Block):
-                exclude_sides.append(side)
-                continue
-
-        side = r.get_sides_by_points(exclude_sides)[0][0]
-        print(r.get_sides_by_points(exclude_sides))
-        print(r)
-
+        sides = r.get_sides_by_points([Grid.get_oposite_side(r.sides_history[-1])])
+        side = sides[0][0]
         next_position = Grid.get_next_position(side, r._Robot__position)
         if not Grid.exists_position(next_position):
             continue
         if isinstance(g[next_position], Block):
             continue
         r.move(side)
-    moves = len(r.positions_history)
-    r.positions_history = []
-    return moves
 
 lens = []
 robot_hardware = RobotHardware()
-for _ in range(1):
+for _ in range(50):
     g = Grid()
-    g[1, 1] = g[1, 2] = g[2, 1] = g[4, 1] = g[6, 1] = g[7, 1] = g[7, 2] = g[3, 3] = g[5, 3] = g[1, 4] = g[3, 5] = g[5, 5] = g[7, 4] = Block
+    for position in MAPS['default']:
+        g[position] = Block
+
     r = Robot(g, robot_hardware)
-    lens.append(solve(r))
+    solve(r)
+    moves = r.positions_history
+    print(moves)
+    lens.append(len(moves))
+    r.positions_history = []
+
+print(sum(lens)/float(len(lens)))
 
 
-print(lens)
-print(sum(lens)/len(lens))
-
-print('Blocked?')
-print(r)
-print(r.get_sides_by_points())

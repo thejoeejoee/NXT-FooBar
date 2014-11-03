@@ -33,12 +33,12 @@ class RobotHardware(object):
         if not Grid.normalize_side(side) == self.last_direction:
             self.change_direction(Grid.normalize_side(side))
 
-        print('Move {} blocks to {} side.'.format(length, side))
+        #print('Move {} blocks to {} side.'.format(length, side))
 
     def change_direction(self, direction):
         # #####################################
         # SOME HW MAGIC
         # #####################################
         self.last_direction = direction
-        print('direction changed to {}'.format(direction))
+        #print('direction changed to {}'.format(direction))
         pass

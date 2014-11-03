@@ -18,4 +18,7 @@ class Point(Segment):
         return self.__collected
 
     def __str__(self):
-        return '[{}0{}]'.format(self._x, self._y)
+        if self.__collected:
+            return '[{}0{}]'.format(self._x, self._y)
+        else:
+            return '[---]'

@@ -12,6 +12,10 @@ GRID_BLOCKS = 11
 GRID_MAX_POINTS = GRID_DEFAULT_HEIGHT * GRID_DEFAULT_WIDTH - GRID_START_BLOCKS - GRID_BLOCKS - 1
 ROBOT_DEFAULT_START_POSITION = (4, 3)
 
+MAPS = {
+    'default': ((1, 1), (1, 2), (2, 1), (4, 1), (6, 1), (7, 1), (7, 2), (3, 3), (5, 3), (1, 4), (3, 5), (5, 5), (7, 4))
+}
+
 
 class RobotModes():
     waiting = 0
