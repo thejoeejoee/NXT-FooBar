@@ -1,16 +1,12 @@
 from __future__ import print_function
-from Crypto.Random.random import randint
+import wx
+
 from PyPacMan.Block import Block
 from PyPacMan.Grid import Grid
-from PyPacMan.Point import Point
-
 from PyPacMan.Robot import Robot
 from PyPacMan.RobotHardware import RobotHardware
-from PyPacMan.settings import SIDES, ROBOT_DEFAULT_START_POSITION, MAPS
-from random import random
-from math import floor
+from PyPacMan.settings import MAPS
 
-import wx
 """
 DIMENSIONS
 0 - top
@@ -51,6 +47,26 @@ for _ in range(50):
     lens.append(len(moves))
     r.positions_history = []
 
-print(sum(lens)/float(len(lens)))
+    app = wx.App(False)
+    frame = wx.Frame(None, title=str(lens[-1]))
+    panel = wx.Panel(frame)
+
+    # def on_paint(event):
+    #     dc = wx.PaintDC(event.GetEventObject())
+    #     dc.Clear()
+    #     before_position = ROBOT_DEFAULT_START_POSITION
+    #     r = lambda: randint(0, 255)
+    #     for position in moves:
+    #
+    #         dc.SetPen(wx.Pen('#%02X%02X%02X' % (r(),r(),r()), 4))
+    #         dc.DrawLine((before_position[1]+1)*40, (before_position[0]+1)*40, (position[1]+1)*40, (position[0]+1)*40)
+    #         before_position = position
+    # 
+    # panel.Bind(wx.EVT_PAINT, on_paint)
+    # frame.Show(True)
+    # app.MainLoop()
+
+
+#print(sum(lens)/float(len(lens)))
 
 
