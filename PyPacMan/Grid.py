@@ -47,8 +47,8 @@ class Grid(object):
 
         if isinstance(self[position], Point):
             if not self[position].is_collected():
-
-                print((abs(self.__last_collected_position[0]-position[0])**2 + (abs(self.__last_collected_position[1]-position[1])**2))**0.5)
+                # test print from len from last collected to actually collecting
+                #print((abs(self.__last_collected_position[0]-position[0])**2 + (abs(self.__last_collected_position[1]-position[1])**2))**0.5)
                 self.__last_collected_position = position
                 self[position].collect()
                 self.__collected += 1

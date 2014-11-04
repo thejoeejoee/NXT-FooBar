@@ -1,7 +1,6 @@
-from random import shuffle
 from PyPacMan.RobotHardware import RobotHardware
 from PyPacMan.Grid import Grid
-from PyPacMan.settings import SIDES, GRID_MAX_RECURSIVE_DEPTH, Directions, ROBOT_DEFAULT_START_POSITION, Sides
+from PyPacMan.settings import SIDES, GRID_MAX_RECURSIVE_DEPTH, ROBOT_DEFAULT_START_POSITION, Sides
 from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
@@ -120,7 +119,7 @@ class Robot(object):
         side_results = []
         include_sides = []
         sides = list(SIDES)
-        shuffle(sides)
+        #shuffle(sides)
         for side in sides:
             if side in exclude_sides:
                 continue

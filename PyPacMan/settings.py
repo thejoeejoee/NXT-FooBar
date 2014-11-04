@@ -4,7 +4,7 @@ from PyPacMan.UnknownSegment import UnknownSegment
 
 SEGMENT_WIDTH = 10
 SONIC_SENSOR_INACCURACY = 3
-GRID_MAX_RECURSIVE_DEPTH = 10
+GRID_MAX_RECURSIVE_DEPTH = 1
 GRID_DEFAULT_WIDTH = 9
 GRID_DEFAULT_HEIGHT = 6
 GRID_START_BLOCKS = 2
@@ -13,7 +13,8 @@ GRID_MAX_POINTS = GRID_DEFAULT_HEIGHT * GRID_DEFAULT_WIDTH - GRID_START_BLOCKS -
 ROBOT_DEFAULT_START_POSITION = (4, 3)
 
 MAPS = {
-    'default': ((1, 1), (1, 2), (2, 1), (4, 1), (6, 1), (7, 1), (7, 2), (3, 3), (5, 3), (1, 4), (3, 5), (5, 5), (7, 4))
+    'default': ((1, 1), (1, 2), (2, 1), (4, 1), (6, 1), (7, 1), (7, 2), (3, 3), (5, 3), (1, 4), (3, 5), (5, 5), (7, 4)),
+    'version1': ((0, 1), (1, 1), (2, 1), (1, 2), (3, 1), (3, 3), (5, 5), (5, 3), (3, 5), (7, 4), (6, 1), (7, 1), (7, 2)),
 }
 
 
