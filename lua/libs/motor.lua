@@ -39,6 +39,7 @@ function Motor:status()
 end
 
 function Motor:continuouslyRotate()
+	self.__control = false
 	self.__rotationType = Motor.Continuously
 	nxt.OutputSetSpeed(self.__port, 32, self.__speed)
 end
@@ -90,7 +91,7 @@ function Motor:controlRotation()
 	local _, _, _, _, _, _, remaining = nxt.OutputGetStatus(self.__port)
 	if remaining <= 1 and self.__control then
 		self.__control = false
-		error("RotationFinished")
+		error("RotationFinished_"..tostring(self.__port))
 	end
 end	
 
