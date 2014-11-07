@@ -18,6 +18,7 @@ class Grid(object):
         self.__grid = [[Point(_x, _y) for _y in range(height)] for _x in range(width)]
         self.__collected = 0
         self.__last_collected_position = (0, 0)
+        self.lengths_from_last_point = []
 
     def __getitem__(self, indexes):
         if isinstance(indexes, tuple) and len(indexes) == 2:
@@ -48,12 +49,29 @@ class Grid(object):
         if isinstance(self[position], Point):
             if not self[position].is_collected():
                 # test print from len from last collected to actually collecting
-                #print((abs(self.__last_collected_position[0]-position[0])**2 + (abs(self.__last_collected_position[1]-position[1])**2))**0.5)
+                self.lengths_from_last_point.append((abs(self.__last_collected_position[0]-position[0])**2 + (abs(self.__last_collected_position[1]-position[1])**2))**0.5)
                 self.__last_collected_position = position
                 self[position].collect()
                 self.__collected += 1
         else:
             raise Exception
+
+    def is_closed_segment(self, position, exclude_side):
+        if not Grid.exists_position(position):
+            return False
+        if isinstance(self[position], Block):
+            return False
+        sides = list(SIDES)
+        sides.remove(exclude_side)
+        blocked = True
+        for side in sides:
+            next_position = Grid.get_next_position(side, position)
+            if not Grid.exists_position(next_position):
+                continue
+            if isinstance(self[next_position], UnknownSegment) or (isinstance(self[next_position], Point) and not self[next_position].is_collected()):
+                blocked = False
+        return blocked
+
 
     def is_solved(self):
         return self.__collected > GRID_MAX_POINTS

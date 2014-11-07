@@ -1,6 +1,6 @@
 from PyPacMan.RobotHardware import RobotHardware
 from PyPacMan.Grid import Grid
-from PyPacMan.settings import SIDES, GRID_MAX_RECURSIVE_DEPTH, ROBOT_DEFAULT_START_POSITION, Sides
+from PyPacMan.settings import SIDES, ROBOT_DEFAULT_START_POSITION, Sides
 from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
@@ -26,49 +26,6 @@ class Robot(object):
         #self.__mode = RobotModes.waiting
         self.positions_history = []
         self.positions_history.append(position)
-
-
-    def is_closed_way(self, source_side, source_position, length=1):
-        """
-        some recursive magic about closed ways problem
-        :return:
-        """
-        if length == 1:
-            self.tested_positions = []
-
-        if source_position is None:
-            source_position = self.__position
-        if length > GRID_MAX_RECURSIVE_DEPTH:
-            return False
-        target_position = Grid.get_next_position(source_side, source_position)  # zjisti pozici, ze ktere bude testovat
-        if not Grid.exists_position(target_position):
-            return True
-
-        if isinstance(self.__grid[target_position], Block):
-            return True
-
-        sides = list(SIDES)
-        sides.remove(Grid.get_oposite_side(source_side))  # bez vstupni strany
-        free_sides = []  # slovnik indexovany stranou oznacujici volne strany
-        for side in sides:
-            position = Grid.get_next_position(side, target_position)
-            if not Grid.exists_position(position):  # pokud pozice neexistuje, je blokovano
-                continue
-            if position in self.tested_positions:  # jiz byl testovan, nebudu testovat
-                continue
-            else:
-                self.tested_positions.append(position)
-
-            segment = self.__grid[position]  # vytazeni vedlejsiho segmentu
-            if isinstance(segment, (Point, UnknownSegment)):  # pokud to je block, je blokovany
-                free_sides.append(side)
-        if len(free_sides) == 0:  # pokud zadny volny, je blokovany
-            return True
-        blocked = []
-        print('    ' * (length - 1) + 'from {} is free {} - ({})'.format(target_position, free_sides, length))
-        for side in free_sides:
-            blocked.append(self.is_closed_way(source_position=target_position, source_side=side, length=length + 1))
-        return all(blocked)
 
     def check_sides(self):
         """
@@ -116,6 +73,7 @@ class Robot(object):
             return False
 
     def get_sides_by_points(self, exclude_sides=[]):
+        # try test another alg
         side_results = []
         include_sides = []
         sides = list(SIDES)
@@ -156,9 +114,12 @@ class Robot(object):
                 while x < self.__x:
                     segments.extend(self.__grid.get_column(x))
                     x += 1
-            side_results.append((side, len(
-                filter(lambda segment: isinstance(segment, Point) and not segment.is_collected(), segments)) / float(
-                len(segments))))
+            count_of_uncollected_points = len(filter(lambda segment: isinstance(segment, Point) and not segment.is_collected(), segments))
+            count_of_blocks = len(filter(lambda segment: isinstance(segment, Block), segments))
+            count_of_all_segments = len(segments)
+
+            side_results.append((side, count_of_uncollected_points / float(count_of_all_segments)**2))
+
         return tuple(sorted(side_results, key=lambda item: item[1], reverse=True))
 
     def move(self, side, length=1):
