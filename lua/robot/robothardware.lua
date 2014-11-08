@@ -17,7 +17,13 @@ function RobotHardware.new(starDirection, mainMotor_Port, directionMotor_Port, s
 	return o
 end
 
-function RobotHardware:changeDirection()
+function RobotHardware:changeDirection(direction)
+	if direction == self.__direction then
+		return
+	end
+
+	local done = false
+
 	if self.__direction == Directions.Vertical then
 		self.__directionMotor:setSpeed(100, Motor.Backward)
 		self.__direction = Directions.Horizontal
@@ -28,8 +34,35 @@ function RobotHardware:changeDirection()
 	end
 
 	self.__directionMotor:limitedRotate(8*360)
+
+	repeat
+		try(
+			function()
+				self.__directionMotor:controlRotation()
+			end
+		)
+
+		catch("RotationFinished"..tostring(self.__directionMotor.__port),
+			function()
+				done = true
+			end
+		)
+	until(done)
 end
 
-function RobotHardware:rotateSensor()
-	
-end
+function RobotHardware:rotateSensor(side)
+	local angle_90 = 210
+
+	if side == self.__sensorSide then
+		return
+	end
+
+	if side < self.__sensorSide then
+		self.__sensorMotor:setSpeed(100, Motor.Backward)
+
+	else
+		self.__sensorMotor:setSpeed(100, Motor.Forward)
+	end
+
+	self.__sensorMotor:limitedRotate(angle_90 * math.floor(math.abs(side - self.__sensorSide)))
+end	
