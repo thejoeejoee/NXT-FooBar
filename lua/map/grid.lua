@@ -55,6 +55,10 @@ function Grid:checkSegment(position, list)
 	return false
 end
 
+function Grid:isSolved()
+	return self.__collected > Grid.MaxPoints
+end
+
 function Grid:freeDirections(position, unknown_segments)
 	unknown_segments = unknown_segments or true
 	local free_directions = {}
