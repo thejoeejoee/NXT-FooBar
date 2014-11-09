@@ -1,8 +1,8 @@
 nxt.dofile("directions")
 
 Grid = {
-	Width = 4,
-	Height = 4,
+	Width = 9,
+	Height = 6,
 	MaxCountBlock = 11,
     MaxGridRecursiveDepth = 20,
     StartBlocks = 2,
@@ -16,6 +16,10 @@ Grid = {
  
 function Grid.new()
 	local o = {}
+
+	o.__collected = 0
+	o.__lastCollectedPosition = {0,0}
+	o.__lenghtsFromLastPoint = {}
 
 	o.__grid = {}
 
@@ -41,40 +45,6 @@ function Grid:set(position, segment)
 	if type(position) == "table" and #position == 2 then
 		self.__grid[position[2]][position[1]] = segment
 	end
-end
-
-function Grid:checkSegment(position, list)
-	local segment = self:get(position)
-
-	for k, v in pairs(list) do
-		if v == segment then
-			return true
-		end
-	end
-
-	return false
-end
-
-function Grid:isSolved()
-	return self.__collected > Grid.MaxPoints
-end
-
-function Grid:freeDirections(position, unknown_segments)
-	unknown_segments = unknown_segments or true
-	local free_directions = {}
-	local side_position
-
-	for _, side in pairs(Sides) do
-		side_position = Grid:nextPosition(side, position)
-
-		if Grid:positionExists(side_position) then
-			if self:checkSegment(side_position, {Grid.Point, Grid.CollectedPoint}) or unknown_segments and self:get(side_position) == Grind.UnknownSegment then
-				table.insert(free_directions, side)
-			end
-		end
-	end
-
-	return free_directions
 end
 
 --STATIKA
@@ -117,4 +87,70 @@ function Grid:normalizeSide(side)
 	elseif side == Sides.Top or side == Sides.Bottom then
 		return Directions.Vertical
 	end
+end
+-- END
+
+function Grid:checkSegment(position, list)
+	local segment = self:get(position)
+
+	for k, v in pairs(list) do
+		if v == segment then
+			return true
+		end
+	end
+
+	return false
+end
+
+function Grid:isClosedSegment(position, exclude_side)
+	if not Grid:positionExists(position) then
+		return false
+
+	elseif self:get(position) == Grid.Block then
+		return false
+	end
+
+	local sides {}
+	local blocked = true
+	local next_position
+
+	for k, side in pairs(Sides) do
+		if not exclude_side == side then
+			sides[k] = side
+		end
+	end
+
+	for _, side in pairs(Sides) do
+		next_position = Grid:nextPosition(side, position)
+
+		if Grid:positionExists(nextPosition) then
+			if self:checkSegment(nextPosition, {Grid.UnknownSegment, Grid.Point}) then
+				blocked = false
+			end
+		end
+	end
+
+	return blocked
+end
+
+function Grid:isSolved()
+	return self.__collected > Grid.MaxPoints
+end
+
+function Grid:freeDirections(position, unknown_segments)
+	unknown_segments = unknown_segments or true
+	local free_directions = {}
+	local side_position
+
+	for _, side in pairs(Sides) do
+		side_position = Grid:nextPosition(side, position)
+
+		if Grid:positionExists(side_position) then
+			if self:checkSegment(side_position, {Grid.Point, Grid.CollectedPoint}) or unknown_segments and self:get(side_position) == Grind.UnknownSegment then
+				table.insert(free_directions, side)
+			end
+		end
+	end
+
+	return free_directions
 end
