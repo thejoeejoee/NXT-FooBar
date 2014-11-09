@@ -11,7 +11,7 @@ function RobotHardware.new(starDirection, mainMotor_Port, directionMotor_Port, s
 	o.__mainMotor = Motor.new(mainMotor_Port)
 	o.__directionMotor = Motor.new(directionMotor_Port)
 	o.__sensorMotor = Motor.new(sensorMotor_Port)
-	o.__ultrasonic = Ultrasonic.new(ultrasonic_Port)
+	o.__ultrasonic = UltraSonic.new(ultrasonic_Port)
 
 	setmetatable(o, {__index = RobotHardware})
 	return o
@@ -22,9 +22,9 @@ function RobotHardware:changeDirection(direction)
 		return
 	end
 
-	local done = false
+	self.__delay = true
 
-	if self.__direction == Directions.Vertical then
+	if direction == Directions.Horizontal then
 		self.__directionMotor:setSpeed(100, Motor.Backward)
 		self.__direction = Directions.Horizontal
 
@@ -33,7 +33,7 @@ function RobotHardware:changeDirection(direction)
 		self.__direction = Directions.Vertical
 	end
 
-	self.__directionMotor:limitedRotate(8*360)
+	self.__directionMotor:limitedRotate(6*360)
 
 	repeat
 		try(
@@ -42,12 +42,12 @@ function RobotHardware:changeDirection(direction)
 			end
 		)
 
-		catch("RotationFinished"..tostring(self.__directionMotor.__port),
+		catch("RotationFinished_"..tostring(self.__directionMotor.__port),
 			function()
-				done = true
+				self.__delay = false
 			end
 		)
-	until(done)
+	until(not self.__delay)
 end
 
 function RobotHardware:rotateSensor(side)
@@ -65,4 +65,5 @@ function RobotHardware:rotateSensor(side)
 	end
 
 	self.__sensorMotor:limitedRotate(angle_90 * math.floor(math.abs(side - self.__sensorSide)))
-end	
+	self.__sensorSide = side
+end
