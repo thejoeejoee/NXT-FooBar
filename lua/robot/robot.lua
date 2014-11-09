@@ -1,24 +1,62 @@
 nxt.dofile("directions")
 
-Robot = {}
+Robot = {
+	Waiting = 0,
+	InClosedWay = 1
+}
  
 function Robot.new(grid, robotHardware, position)
 	local o = {}
 
+	--o.__mode = Robot.Waiting
+
 	o.__grid = grid
 	o.__hardware = robotHardware
 
-	if type(position) == "table" and #position == 2 then
-		o.__x = position[1]
-		o.__y = position[2]
-		o.__position = position
-	end
+	o.__lastDirection = nil
+	o.__sidesHistory = {}
+	o.__x = position[1]
+	o.__y = position[2]
+	o.__position = position
+	o.__positionHistory = {}
+	table.insert(o.__positionHistory, position)
 
 	setmetatable(o, {__index = Robot})
 	return o
 end
 
-function Robot:solveClosedWay(source_side, source_position)
+function Robot:checkSides()
+	local scan_line 
+	local next_position
+	local next_segment
+
+	for _, side in pairs(Sides) do
+		scan_line = false	
+		next_position = Grid:nextPosition(side, self.__position)
+
+		if Grid:positionExists(next_position) then
+			while Grid:positionExists(next_position) do
+				next_segment = self.__grid:get(next_position)
+
+				if next_segment == Grid.Block then
+					break
+				end
+
+				if next_segment == Grid.UnknownSegment then
+					scan_line = true
+				end
+
+				next_position = Grid:next_position(side, next_position)
+			end
+		end
+
+		if scan_line then
+			self:scan_line(side)
+		end
+	end
+end
+
+--[[function Robot:solveClosedWay(source_side, source_position)
 	self.testedPositions = {}
 	return self:isClosedWay(source_side, source_position)
 end
@@ -145,4 +183,4 @@ function Robot:setKnownSegment(position, segment)
 	else
 		return false
 	end
-end
+end]]
