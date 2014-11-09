@@ -5,6 +5,8 @@ Grid = {
 	Height = 4,
 	MaxCountBlock = 11,
     MaxGridRecursiveDepth = 20,
+    StartBlocks = 2,
+    MaxPoints = Grid.Height * Grid.Width - Grid.StartBlocks - Grid.MaxCountBlock - 1
 
     UnknownSegment = "u",
     Block = "b",
@@ -53,6 +55,25 @@ function Grid:checkSegment(position, list)
 	return false
 end
 
+function Grid:freeDirections(position, unknown_segments)
+	unknown_segments = unknown_segments or true
+	local free_directions = {}
+	local side_position
+
+	for _, side in pairs(Sides) do
+		side_position = Grid:nextPosition(side, position)
+
+		if Grid:positionExists(side_position) then
+			if self:checkSegment(side_position, {Grid.Point, Grid.CollectedPoint}) or unknown_segments and self:get(side_position) == Grind.UnknownSegment then
+				table.insert(free_directions, side)
+			end
+		end
+	end
+
+	return free_directions
+end
+
+--STATIKA
 function Grid:positionExists(position)
 	if position[1] < 0 or position[2] < 0 then
 		return false
@@ -82,5 +103,14 @@ function Grid:oppositeSide(side)
 		return side + 2
 	elseif side == Sides.Bottom or side == Sides.Left then
 		return side - 2
+	end
+end
+
+
+function Grid:normalizeSide(side)
+	if side == Sides.Left or side == Sides.Right then
+		return Directions.Horizontal
+	elseif side == Sides.Top or side == Sides.Bottom then
+		return Directions.Vertical
 	end
 end
