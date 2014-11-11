@@ -1,3 +1,6 @@
+--LIBOR--
+r = RobotHardware.new(1, 1, 2, 3, 1)
+
 ----------------------------------------
 -------otáčení senzoru tam a zpět-------
 ----------------------------------------
@@ -90,6 +93,13 @@ repeat
 		end
 	)
 until(nxt.ButtonRead == 8)
+function foo()
+	r:move(Sides.Right)
+	r:move(Sides.Top)
+	r:move(Sides.Left)
+	r:move(Sides.Bottom)
+end
+
 
 
 ----------------------------------
