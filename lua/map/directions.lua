@@ -1,8 +1,8 @@
 Sides = {
-	Top = 0,
-	Right = 1,
-	Bottom = 2,
-	Left = 3
+	Bottom = 0,
+	Left = 1,
+	Top = 2,
+	Right = 3
 }
 
 Directions = {
