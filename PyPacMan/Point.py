@@ -10,15 +10,16 @@ class Point(Segment):
         super(Point, self).__init__(x, y)
         self.__collected = False
 
-    def collect(self):
+    def collect(self, order):
         self.__collected = True
-        print('on {} colected!'.format(self.position))
+        self.__colected_order = order
+        # print('on {} colected!'.format(self.position))
 
     def is_collected(self):
         return self.__collected
 
     def __str__(self):
         if self.__collected:
-            return '[{}0{}]'.format(self._x, self._y)
+            return '[{:3}]'.format(self.__colected_order)
         else:
             return '[---]'

@@ -16,7 +16,7 @@ class Grid(object):
         self.width = width
         self.height = height
         self.__grid = [[Point(_x, _y) for _y in range(height)] for _x in range(width)]
-        self.__collected = 0
+        self.collected = 0
         self.__last_collected_position = (0, 0)
         self.lengths_from_last_point = []
 
@@ -50,9 +50,10 @@ class Grid(object):
             if not self[position].is_collected():
                 # test print from len from last collected to actually collecting
                 self.lengths_from_last_point.append((abs(self.__last_collected_position[0]-position[0])**2 + (abs(self.__last_collected_position[1]-position[1])**2))**0.5)
+                print(self.lengths_from_last_point[-1])
                 self.__last_collected_position = position
-                self[position].collect()
-                self.__collected += 1
+                self.collected += 1
+                self[position].collect(self.collected)
         else:
             raise Exception
 
@@ -72,9 +73,8 @@ class Grid(object):
                 blocked = False
         return blocked
 
-
     def is_solved(self):
-        return self.__collected > GRID_MAX_POINTS
+        return self.collected >= GRID_MAX_POINTS
 
     def get_free_directions(self, position, unknown_segments=True):
         assert len(position) == 2
