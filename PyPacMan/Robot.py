@@ -1,6 +1,6 @@
 from PyPacMan.RobotHardware import RobotHardware
 from PyPacMan.Grid import Grid
-from PyPacMan.settings import SIDES, ROBOT_DEFAULT_START_POSITION, Sides, GRID_MAX_RECURSIVE_DEPTH
+from PyPacMan.settings import SIDES, ROBOT_DEFAULT_START_POSITION, Sides, GRID_MAX_RECURSIVE_DEPTH, ROBOT_OPTIONS
 from PyPacMan.Block import Block
 from PyPacMan.Point import Point
 from PyPacMan.UnknownSegment import UnknownSegment
@@ -91,28 +91,28 @@ class Robot(object):
             include_sides.append(side)
 
         if len(include_sides) == 0:
-            return [[Grid.get_oposite_side(self.sides_history[-1])]]
+            return [[Grid.get_oposite_side(self.sides_history[-1][0])]]
 
         for side in include_sides:
             segments = []
             if side == Sides.top:
                 y = 0
-                while y < self.y:
+                while y < self.y + ROBOT_OPTIONS['count_actually_line']:
                     segments.extend(self.__grid.get_row(y))
                     y += 1
             elif side == Sides.right:
-                x = self.x + 1
+                x = self.x + ROBOT_OPTIONS['count_actually_line']
                 while x < self.__grid.width:
                     segments.extend(self.__grid.get_column(x))
                     x += 1
             elif side == Sides.bottom:
-                y = self.y + 1
+                y = self.y + ROBOT_OPTIONS['count_actually_line']
                 while y < self.__grid.height:
                     segments.extend(self.__grid.get_row(y))
                     y += 1
             elif side == Sides.left:
                 x = 0
-                while x < self.x:
+                while x < self.x + ROBOT_OPTIONS['count_actually_line']:
                     segments.extend(self.__grid.get_column(x))
                     x += 1
             count_of_uncollected_points = len(filter(lambda segment: isinstance(segment, Point) and not segment.is_collected(), segments))
@@ -126,7 +126,13 @@ class Robot(object):
     def move(self, side, length=1):
         assert side in SIDES
         new_position = self.position
-        self.sides_history.append(side)
+        if len(self.sides_history) == 0:
+            self.sides_history.append([side, 1])
+        else:
+            if self.sides_history[-1][0] == side:
+                self.sides_history[-1][1] += 1
+            else:
+                self.sides_history.append([side, 1])
         for _ in range(length):
             new_position = Grid.get_next_position(side, new_position)
             assert Grid.exists_position(new_position)
@@ -170,13 +176,14 @@ class Robot(object):
             if not Grid.exists_position(position):  # pokud pozice neexistuje, je blokovano
                 continue
             if position in self.tested_positions:  # jiz byl testovan, nebudu testovat
-                continue
+                pass
             else:
                 self.tested_positions.append(position)
-
             segment = self.__grid[position]  # vytazeni vedlejsiho segmentu
-            if isinstance(segment, (Point, UnknownSegment)):  # pokud to je block, je blokovany
+            if not isinstance(segment, Block):  # pokud to neni block, je tato strana volna
                 free_sides.append(side)
+            if isinstance(self.__grid[position], Point) and self.__grid[position].is_collected():
+                continue
         if len(free_sides) == 0:  # pokud zadny volny, je blokovany
             return True
         blocked = []
