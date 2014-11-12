@@ -37,7 +37,7 @@ class RobotHardware(object):
             side -= 2
         else:
             side += 2
-        print('{}'.format(side))
+            # print('{}'.format(side))
 
     def change_direction(self, direction):
         # #####################################

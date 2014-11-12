@@ -19,7 +19,7 @@ GRID_MAX_POINTS = GRID_DEFAULT_HEIGHT * GRID_DEFAULT_WIDTH - GRID_BLOCKS - GRID_
 ROBOT_DEFAULT_START_POSITION = (4, 3)
 ROBOT_OPTIONS = {
     'count_actually_line': False,
-    'prefer_uncollected_point': False,
+    'prefer_uncollected_point': True,
 }
 
 MAPS = {
